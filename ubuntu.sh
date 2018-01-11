@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Pre-prompt for the sudo authorization so it doesn't prompt later
-sudo date
-
 # Prompt for the configuration options
 echo "Automatic agent install and configuration."
 echo
@@ -16,6 +13,9 @@ do
   read -p "Location ID (i.e. Dulles): " WPT_LOCATION
 done
 read -p "Location Key (if required): " WPT_KEY
+
+# Pre-prompt for the sudo authorization so it doesn't prompt later
+sudo date
 
 # Make sure sudo doesn't prompt for a password
 echo "$USER ALL=(ALL:ALL) NOPASSWD:ALL" | sudo EDITOR='tee -a' visudo
