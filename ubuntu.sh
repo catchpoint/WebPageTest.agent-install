@@ -21,10 +21,18 @@ read -p "Location Key (if required): " WPT_KEY
 echo "$USER ALL=(ALL:ALL) NOPASSWD:ALL" | sudo EDITOR='tee -a' visudo
 
 cd ~
-sudo apt-get update
+until sudo timeout 20m apt-get update
+do
+    sleep 1
+done
+until sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+do
+    sleep 1
+done
 sudo apt-get install -y git screen watchdog
 git clone https://github.com/WPO-Foundation/wptagent.git
 wptagent/ubuntu_install.sh
+sudo apt-get -y autoremove
 
 # disable IPv6 if requested
 if [ "${DISABLE_IPV6,,}" == 'y' ]; then
