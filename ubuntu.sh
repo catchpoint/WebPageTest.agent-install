@@ -21,7 +21,7 @@ sudo date
 echo "$USER ALL=(ALL:ALL) NOPASSWD:ALL" | sudo EDITOR='tee -a' visudo
 
 cd ~
-until sudo timeout 20m apt-get update
+until sudo apt-get update
 do
     sleep 1
 done
@@ -30,9 +30,16 @@ do
     sleep 1
 done
 sudo apt-get install -y git screen watchdog
-git clone https://github.com/WPO-Foundation/wptagent.git
+until git clone https://github.com/WPO-Foundation/wptagent.git
+do
+    sleep 1
+done
 wptagent/ubuntu_install.sh
 sudo apt-get -y autoremove
+
+# Reboot when out of memory
+echo "vm.panic_on_oom=1" | sudo tee -a /etc/sysctl.conf
+echo "kernel.panic=10" | sudo tee -a /etc/sysctl.conf
 
 # disable IPv6 if requested
 if [ "${DISABLE_IPV6,,}" == 'y' ]; then
@@ -69,7 +76,7 @@ echo 'done' >> ~/agent.sh
 echo 'while :' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    echo "Updating OS"' >> ~/agent.sh
-echo '    until sudo timeout 20m apt-get update' >> ~/agent.sh
+echo '    until sudo apt-get update' >> ~/agent.sh
 echo '    do' >> ~/agent.sh
 echo '        sleep 1' >> ~/agent.sh
 echo '    done' >> ~/agent.sh
@@ -81,7 +88,7 @@ echo '    sudo apt-get -y autoremove' >> ~/agent.sh
 echo '    sudo npm i -g lighthouse' >> ~/agent.sh
 echo '    for i in `seq 1 24`' >> ~/agent.sh
 echo '    do' >> ~/agent.sh
-echo '        timeout 10m git pull origin master' >> ~/agent.sh
+echo '        git pull origin master' >> ~/agent.sh
 echo "        python wptagent.py -vvvv --server \"http://$WPT_SERVER/work/\" --location $WPT_LOCATION $KEY_OPTION --xvfb --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 echo '        echo "Exited, restarting"' >> ~/agent.sh
 echo '        sleep 1' >> ~/agent.sh
