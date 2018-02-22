@@ -73,27 +73,25 @@ echo 'echo "Waiting for apt to become available"' >> ~/agent.sh
 echo 'while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
-echo 'while :' >> ~/agent.sh
+echo 'echo "Updating OS"' >> ~/agent.sh
+echo 'until sudo apt-get update' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
-echo '    echo "Updating OS"' >> ~/agent.sh
-echo '    until sudo apt-get update' >> ~/agent.sh
-echo '    do' >> ~/agent.sh
-echo '        sleep 1' >> ~/agent.sh
-echo '    done' >> ~/agent.sh
-echo '    until sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
-echo '    do' >> ~/agent.sh
-echo '        sleep 1' >> ~/agent.sh
-echo '    done' >> ~/agent.sh
-echo '    sudo apt-get -y autoremove' >> ~/agent.sh
-echo '    sudo npm i -g lighthouse' >> ~/agent.sh
-echo '    for i in `seq 1 24`' >> ~/agent.sh
-echo '    do' >> ~/agent.sh
-echo '        git pull origin master' >> ~/agent.sh
-echo "        python wptagent.py -vvvv --server \"http://$WPT_SERVER/work/\" --location $WPT_LOCATION $KEY_OPTION --xvfb --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
-echo '        echo "Exited, restarting"' >> ~/agent.sh
-echo '        sleep 1' >> ~/agent.sh
-echo '    done' >> ~/agent.sh
+echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
+echo 'until sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
+echo 'do' >> ~/agent.sh
+echo '    sleep 1' >> ~/agent.sh
+echo 'done' >> ~/agent.sh
+echo 'sudo apt-get -y autoremove' >> ~/agent.sh
+echo 'sudo npm i -g lighthouse' >> ~/agent.sh
+echo 'for i in `seq 1 24`' >> ~/agent.sh
+echo 'do' >> ~/agent.sh
+echo '    git pull origin master' >> ~/agent.sh
+echo "    python wptagent.py -vvvv --server \"http://$WPT_SERVER/work/\" --location $WPT_LOCATION $KEY_OPTION --xvfb --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+echo '    echo "Exited, restarting"' >> ~/agent.sh
+echo '    sleep 1' >> ~/agent.sh
+echo 'done' >> ~/agent.sh
+echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
 
 # add it to the crontab
