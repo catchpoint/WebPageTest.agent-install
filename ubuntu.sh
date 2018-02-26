@@ -83,6 +83,7 @@ echo 'do' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 echo 'sudo apt-get -y autoremove' >> ~/agent.sh
+echo 'sudo apt-get clean' >> ~/agent.sh
 echo 'sudo npm i -g lighthouse' >> ~/agent.sh
 echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
