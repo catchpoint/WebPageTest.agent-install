@@ -13,7 +13,7 @@ chmod +x ubuntu.sh && \
 
 ```bash
 wget https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/gce_ubuntu.sh && \
-chmod +x ubuntu.sh && \
+chmod +x gce_ubuntu.sh && \
 ./ubuntu.sh
 ```
 
@@ -21,6 +21,6 @@ chmod +x ubuntu.sh && \
 
 ```bash
 wget https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/ec2_ubuntu.sh && \
-chmod +x ubuntu.sh && \
+chmod +x ec2_ubuntu.sh && \
 ./ubuntu.sh
 ```
