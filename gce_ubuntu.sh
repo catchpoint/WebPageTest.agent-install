@@ -55,6 +55,7 @@ echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 echo 'until sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
+echo '    sudo apt-get -f install' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 echo 'sudo apt-get -y autoremove' >> ~/agent.sh

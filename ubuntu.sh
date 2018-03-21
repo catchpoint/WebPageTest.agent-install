@@ -67,12 +67,6 @@ fi
 echo '#!/bin/sh' > ~/agent.sh
 echo 'export DEBIAN_FRONTEND=noninteractive' >> ~/agent.sh
 echo 'cd ~/wptagent' >> ~/agent.sh
-echo 'echo "Waiting for 30 second startup delay"' >> ~/agent.sh
-echo 'sleep 30' >> ~/agent.sh
-echo 'echo "Waiting for apt to become available"' >> ~/agent.sh
-echo 'while fuser /var/lib/dpkg/lock >/dev/null 2>&1 ; do' >> ~/agent.sh
-echo '    sleep 1' >> ~/agent.sh
-echo 'done' >> ~/agent.sh
 echo 'echo "Updating OS"' >> ~/agent.sh
 echo 'until sudo apt-get update' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
@@ -80,6 +74,7 @@ echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 echo 'until sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
+echo '    sudo apt-get -f install' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 echo 'sudo apt-get -y autoremove' >> ~/agent.sh
