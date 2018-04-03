@@ -3,7 +3,7 @@
 # Prompt for the configuration options
 echo "WebPageTest instance template creator."
 
-read -e -p "Instance template name (defaults to wpt-agent): " -i "wpt-agent" TEMPLATE_NAME
+read -e -p "Instance template name: " -i "wpt-agent" TEMPLATE_NAME
 while [[ $INSTANCE_METADATA == '' ]]
 do
     read -p "Instance Metadata String (wpt_server=...): " INSTANCE_METADATA
