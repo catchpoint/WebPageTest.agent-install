@@ -3,7 +3,7 @@
 # Prompt for the configuration options
 echo "WebPageTest instance template creator."
 
-if [ $DEVSHELL_PROJECT_ID == '' ]]; then
+if [ $DEVSHELL_PROJECT_ID == '' ]; then
     echo "This script is meant to be run from within a Google Cloud Shell"
     exit
 fi
