@@ -29,6 +29,7 @@ chmod +x ec2_ubuntu.sh && \
 Open the cloud shell for the project where the agents will run and paste:
 
 ```bash
+rm gce_image.sh || \
 wget https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/gce_image.sh && \
 chmod +x gce_image.sh && \
 ./gce_image.sh
