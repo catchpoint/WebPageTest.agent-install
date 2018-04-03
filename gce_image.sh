@@ -6,6 +6,7 @@ echo "WebPageTest instance template creator."
 read -p "Instance template name (defaults to wpt-agent): " NAME
 if [ $NAME != '' ]; then
     NAME = 'wpt-agent'
+fi
 while [[ $METADATA == '' ]]
 do
     read -p "Instance Metadata String (wpt_server=...): " METADATA
