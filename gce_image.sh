@@ -3,12 +3,12 @@
 # Prompt for the configuration options
 echo "WebPageTest instance template creator."
 
-if [ $DEVSHELL_PROJECT_ID == '' ]; then
+if [ "$DEVSHELL_PROJECT_ID" == "" ]; then
     echo "This script is meant to be run from within a Google Cloud Shell"
     exit
 fi
 read -e -p "Instance template name: " -i "wpt-agent" TEMPLATE_NAME
-while [[ $INSTANCE_METADATA == '' ]]
+while [[ "$INSTANCE_METADATA" == "" ]]
 do
     read -p "Instance Metadata String (wpt_server=...): " INSTANCE_METADATA
 done
