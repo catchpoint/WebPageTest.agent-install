@@ -27,3 +27,10 @@ Open the cloud shell for the project where the agents will run and paste:
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/gce_image.sh)
 ```
+
+## Raspberry Pi (Raspbian Stretch):
+Still a work in progress and requires editing ~/agent.sh after install to configure tethering and traffic shaping.
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/raspbian.sh)
+```
