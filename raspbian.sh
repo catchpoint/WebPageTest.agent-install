@@ -186,6 +186,8 @@ fi
 echo '#!/bin/sh' > ~/agent.sh
 echo 'export DEBIAN_FRONTEND=noninteractive' >> ~/agent.sh
 echo 'cd ~/wptagent' >> ~/agent.sh
+echo 'echo "Waiting for 30 second startup delay"' >> ~/agent.sh
+echo 'sleep 30' >> ~/agent.sh
 echo 'echo "Updating OS"' >> ~/agent.sh
 echo 'until sudo apt-get update' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
