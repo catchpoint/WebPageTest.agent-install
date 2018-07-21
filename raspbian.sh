@@ -200,7 +200,7 @@ echo 'sudo npm i -g lighthouse' >> ~/agent.sh
 echo 'sudo fstrim -v /' >> ~/agent.sh
 echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
-echo '    git pull origin master' >> ~/agent.sh
+echo '    git pull origin release' >> ~/agent.sh
 echo "    python wptagent.py -vvvv $NAME_OPTION --server \"http://$WPT_SERVER/work/\" --location $WPT_LOCATION $KEY_OPTION --android --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh

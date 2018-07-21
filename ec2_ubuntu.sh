@@ -21,6 +21,7 @@ until git clone https://github.com/WPO-Foundation/wptagent.git
 do
     sleep 1
 done
+git checkout origin/release
 wptagent/ubuntu_install.sh
 sudo apt-get -y autoremove
 
@@ -63,7 +64,7 @@ echo 'sudo apt-get clean' >> ~/agent.sh
 echo 'sudo npm i -g lighthouse' >> ~/agent.sh
 echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
-echo '    git pull origin master' >> ~/agent.sh
+echo '    git pull origin release' >> ~/agent.sh
 echo "    python wptagent.py -vvvv --ec2 --xvfb --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
