@@ -31,6 +31,8 @@ bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install
 ## Raspberry Pi (Raspbian Stretch):
 Still a work in progress and requires editing ~/agent.sh after install to configure tethering and traffic shaping.
 
+Warning: This takes a LONG time (several hours).  For multiple devices it is generally best to get one configured and then just clone the SD card for other devices.
+
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/raspbian.sh)
 ```
