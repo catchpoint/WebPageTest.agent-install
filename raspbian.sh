@@ -24,19 +24,27 @@ echo "$USER ALL=(ALL:ALL) NOPASSWD:ALL" | sudo EDITOR='tee -a' visudo
 echo "Trimming filesystem..."
 sudo fstrim -v /
 
-# Install OS packages
 cd ~
-until sudo apt-get update
+until sudo apt update
 do
     sleep 1
 done
-until sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+# Known-good kernel 4.14.62
+# TODO: remove this when newer kernels stop panic'ing for netem
+until sudo rpi-update 911147a3276beee09afc4237e1b7b964e61fb88a
+do
+    sleep 1
+done
+sudo apt-mark hold raspberrypi-bootloader raspberrypi-kernel
+
+# Install OS packages
+until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 do
     sleep 1
 done
 curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-until sudo DEBIAN_FRONTEND=noninteractive apt-get install -yq git screen watchdog \
+until sudo DEBIAN_FRONTEND=noninteractive apt install -yq git screen watchdog \
 libtiff5-dev libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk python2.7 python-pip \
 python-dev libavutil-dev libmp3lame-dev libx264-dev yasm autoconf automake build-essential libass-dev libfreetype6-dev libtheora-dev \
 libtool libvorbis-dev pkg-config texi2html zlib1g-dev libtext-unidecode-perl python-numpy python-scipy \
@@ -46,7 +54,7 @@ chromium-browser firefox-esr ttf-mscorefonts-installer fonts-noto*
 do
     sleep 1
 done
-sudo apt-get install -y python-software-properties
+sudo apt install -y python-software-properties
 until sudo npm install -g lighthouse
 do
     sleep 1
@@ -70,13 +78,63 @@ cd ~
 
 # ffmpeg
 cd ~
-git clone https://github.com/FFmpeg/FFmpeg.git ffmpeg
+git clone --depth 1 https://github.com/FFmpeg/FFmpeg.git ffmpeg
 cd ffmpeg
 ./configure --arch=armel --target-os=linux --enable-gpl --enable-libx264 --enable-nonfree
 make -j4
 sudo make install
 cd ~
 rm -rf ffmpeg
+
+# iOS support
+until sudo DEBIAN_FRONTEND=noninteractive apt -yq install build-essential \
+cmake python-dev cython swig automake autoconf libtool libusb-1.0-0 libusb-1.0-0-dev \
+libreadline-dev openssl libssl1.0.2 libssl1.1
+do
+    sleep 1
+done
+cd ~
+
+git clone --depth 1 https://github.com/libimobiledevice/libplist.git libplist
+cd libplist
+./autogen.sh
+make
+sudo make install
+cd ~
+rm -rf libplist
+
+git clone --depth 1 https://github.com/libimobiledevice/libusbmuxd.git libusbmuxd
+cd libusbmuxd
+./autogen.sh
+make
+sudo make install
+cd ~
+rm -rf libusbmuxd
+
+git clone --depth 1 https://github.com/libimobiledevice/libimobiledevice.git libimobiledevice
+cd libimobiledevice
+./autogen.sh
+make
+sudo make install
+cd ~
+rm -rf libimobiledevice
+
+git clone --depth 1 https://github.com/libimobiledevice/usbmuxd.git usbmuxd
+cd usbmuxd
+./autogen.sh
+make
+sudo make install
+cd ~
+rm -rf usbmuxd
+
+git clone --depth 1 https://github.com/google/ios-webkit-debug-proxy.git ios-webkit-debug-proxy
+cd ios-webkit-debug-proxy
+./autogen.sh
+make
+sudo make install
+cd ~
+rm -rf ios-webkit-debug-proxy
+
 
 # System config
 echo '# Limits increased for wptagent' | sudo tee -a /etc/security/limits.conf
@@ -164,9 +222,6 @@ echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"1bbb\", MODE=\"0666\", GROUP=\"plugd
 sudo udevadm control --reload-rules
 sudo service udev restart
 
-# libimobiledevice
-# TODO
-
 # build the startup script
 echo '#!/bin/sh' > ~/startup.sh
 echo "PATH=$PWD/bin:$PWD/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin" >> ~/startup.sh
@@ -189,13 +244,13 @@ echo 'cd ~/wptagent' >> ~/agent.sh
 echo 'echo "Waiting for 30 second startup delay"' >> ~/agent.sh
 echo 'sleep 30' >> ~/agent.sh
 echo 'echo "Updating OS"' >> ~/agent.sh
-echo 'until sudo apt-get update' >> ~/agent.sh
+echo 'until sudo apt update' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
-echo 'until sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
+echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
-echo '    sudo apt-get -f install' >> ~/agent.sh
+echo '    sudo apt -f install' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 echo 'sudo npm i -g lighthouse' >> ~/agent.sh
@@ -203,12 +258,14 @@ echo 'sudo fstrim -v /' >> ~/agent.sh
 echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    git pull origin release' >> ~/agent.sh
-echo "    python wptagent.py -vvvv $NAME_OPTION --server \"http://$WPT_SERVER/work/\" --location $WPT_LOCATION $KEY_OPTION --android --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+echo "    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+echo "    #python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --vpntether eth0,192.168.0.1 --shaper netem,eth0 --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+echo "    #python wptagent.py -vvvv $NAME_OPTION  --location $WPT_LOCATION $KEY_OPTION--server \"http://$WPT_SERVER/work/\" --iOS --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
-echo 'sudo apt-get -y autoremove' >> ~/agent.sh
-echo 'sudo apt-get clean' >> ~/agent.sh
+echo 'sudo apt -y autoremove' >> ~/agent.sh
+echo 'sudo apt clean' >> ~/agent.sh
 echo 'adb reboot' >> ~/agent.sh
 echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
@@ -217,8 +274,8 @@ chmod +x ~/agent.sh
 CRON_ENTRY="@reboot $PWD/startup.sh"
 ( crontab -l | grep -v -F "$CRON_ENTRY" ; echo "$CRON_ENTRY" ) | crontab -
 
-sudo apt-get -y autoremove
-sudo apt-get clean
+sudo apt -y autoremove
+sudo apt clean
 
 # configure watchdog
 echo "bcm2835_wdt" | sudo tee -a /etc/modules
