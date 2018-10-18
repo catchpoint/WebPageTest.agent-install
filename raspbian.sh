@@ -100,6 +100,7 @@ cd libplist
 ./autogen.sh
 make
 sudo make install
+sudo ldconfig
 cd ~
 rm -rf libplist
 
@@ -108,6 +109,7 @@ cd libusbmuxd
 ./autogen.sh
 make
 sudo make install
+sudo ldconfig
 cd ~
 rm -rf libusbmuxd
 
@@ -116,6 +118,7 @@ cd libimobiledevice
 ./autogen.sh
 make
 sudo make install
+sudo ldconfig
 cd ~
 rm -rf libimobiledevice
 
@@ -124,6 +127,7 @@ cd usbmuxd
 ./autogen.sh
 make
 sudo make install
+sudo ldconfig
 cd ~
 rm -rf usbmuxd
 
@@ -132,6 +136,7 @@ cd ios-webkit-debug-proxy
 ./autogen.sh
 make
 sudo make install
+sudo ldconfig
 cd ~
 rm -rf ios-webkit-debug-proxy
 
@@ -143,8 +148,6 @@ echo '* hard nofile 300000' | sudo tee -a /etc/security/limits.conf
 echo '# wptagent end' | sudo tee -a /etc/security/limits.conf
 echo '# Settings updated for wptagent' | sudo tee -a /etc/sysctl.conf
 echo 'net.ipv4.tcp_syn_retries = 4' | sudo tee -a /etc/sysctl.conf
-echo '# wptagent end' | sudo tee -a /etc/sysctl.conf
-sudo sysctl -p
 
 # Boot options
 echo 'dtoverlay=pi3-disable-wifi' | sudo tee -a /boot/config.txt
@@ -173,6 +176,9 @@ if [ "${DISABLE_IPV6,,}" == 'y' ]; then
   echo "net.ipv6.conf.default.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
   echo "net.ipv6.conf.lo.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
 fi
+
+echo '# wptagent end' | sudo tee -a /etc/sysctl.conf
+sudo sysctl -p
 
 # disable hardware checksum offload
 sudo sed -i 's/exit 0/ethtool --offload eth0 rx off tx off\nexit 0/g' /etc/network/interfaces
