@@ -89,7 +89,7 @@ rm -rf ffmpeg
 # iOS support
 until sudo DEBIAN_FRONTEND=noninteractive apt -yq install build-essential \
 cmake python-dev cython swig automake autoconf libtool libusb-1.0-0 libusb-1.0-0-dev \
-libreadline-dev openssl libssl1.0.2 libssl1.1
+libreadline-dev openssl libssl1.0.2 libssl1.1 libssl-dev
 do
     sleep 1
 done
@@ -100,7 +100,6 @@ cd libplist
 ./autogen.sh
 make
 sudo make install
-sudo ldconfig
 cd ~
 rm -rf libplist
 
@@ -109,7 +108,6 @@ cd libusbmuxd
 ./autogen.sh
 make
 sudo make install
-sudo ldconfig
 cd ~
 rm -rf libusbmuxd
 
@@ -118,7 +116,6 @@ cd libimobiledevice
 ./autogen.sh
 make
 sudo make install
-sudo ldconfig
 cd ~
 rm -rf libimobiledevice
 
@@ -127,7 +124,6 @@ cd usbmuxd
 ./autogen.sh
 make
 sudo make install
-sudo ldconfig
 cd ~
 rm -rf usbmuxd
 
@@ -136,7 +132,6 @@ cd ios-webkit-debug-proxy
 ./autogen.sh
 make
 sudo make install
-sudo ldconfig
 cd ~
 rm -rf ios-webkit-debug-proxy
 
