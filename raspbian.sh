@@ -260,8 +260,8 @@ echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    git pull origin release' >> ~/agent.sh
 echo "    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
-echo "    #python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --vpntether eth0,192.168.0.1 --shaper netem,eth0 --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
-echo "    #python wptagent.py -vvvv $NAME_OPTION  --location $WPT_LOCATION $KEY_OPTION--server \"http://$WPT_SERVER/work/\" --iOS --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+echo "#    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --vpntether eth0,192.168.0.1 --shaper netem,eth0 --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+echo "#    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --iOS --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
