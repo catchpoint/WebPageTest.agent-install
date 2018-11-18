@@ -78,8 +78,6 @@ echo 'do' >> ~/agent.sh
 echo '    sudo apt-get -f install' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
-echo 'sudo apt-get -y autoremove' >> ~/agent.sh
-echo 'sudo apt-get clean' >> ~/agent.sh
 echo 'sudo npm i -g lighthouse' >> ~/agent.sh
 echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
@@ -88,6 +86,8 @@ echo "    python wptagent.py -vvvv --server \"http://$WPT_SERVER/work/\" --locat
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
+echo 'sudo apt-get -y autoremove' >> ~/agent.sh
+echo 'sudo apt-get clean' >> ~/agent.sh
 echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
 

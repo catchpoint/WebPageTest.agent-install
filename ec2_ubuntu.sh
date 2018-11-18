@@ -41,9 +41,30 @@ echo "test-binary = $PWD/wptagent/alive.sh" | sudo tee -a /etc/watchdog.conf
 # build the startup script
 echo '#!/bin/sh' > ~/startup.sh
 echo "PATH=$PWD/bin:$PWD/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin" >> ~/startup.sh
-echo 'screen -dmS agent ~/agent.sh' >> ~/startup.sh
+echo 'cd ~' >> ~/startup.sh
+echo 'if [ -e first.run ]' >> ~/startup.sh
+echo 'then' >> ~/startup.sh
+echo '    screen -dmS init ~/firstrun.sh' >> ~/startup.sh
+echo 'else' >> ~/startup.sh
+echo '    screen -dmS agent ~/agent.sh' >> ~/startup.sh
+echo 'fi' >> ~/startup.sh
 echo 'sudo service watchdog restart' >> ~/startup.sh
 chmod +x ~/startup.sh
+
+# build the firstrun script
+echo '#!/bin/sh' > ~/firstrun.sh
+echo 'cd ~' >> ~/firstrun.sh
+echo 'until sudo apt-get update' >> ~/firstrun.sh
+echo 'do' >> ~/firstrun.sh
+echo '    sleep 1' >> ~/firstrun.sh
+echo 'done' >> ~/firstrun.sh
+echo 'until sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/firstrun.sh
+echo 'do' >> ~/firstrun.sh
+echo '    sleep 1' >> ~/firstrun.sh
+echo 'done' >> ~/firstrun.sh
+echo 'rm ~/first.run' >> ~/firstrun.sh
+echo 'sudo reboot' >> ~/firstrun.sh
+chmod +x ~/firstrun.sh
 
 # build the agent script
 echo '#!/bin/sh' > ~/agent.sh
@@ -54,13 +75,13 @@ echo 'until sudo apt-get update' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
+echo 'sudo rm /boot/grub/menu.lst' >> ~/agent.sh
+echo 'sudo update-grub-legacy-ec2 -y' >> ~/agent.sh
 echo 'until sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    sudo apt-get -f install' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
-echo 'sudo apt-get -y autoremove' >> ~/agent.sh
-echo 'sudo apt-get clean' >> ~/agent.sh
 echo 'sudo npm i -g lighthouse' >> ~/agent.sh
 echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
@@ -69,6 +90,8 @@ echo "    python wptagent.py -vvvv --ec2 --xvfb --throttle --exit 60 --alive /tm
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
+echo 'sudo apt-get -y autoremove' >> ~/agent.sh
+echo 'sudo apt-get clean' >> ~/agent.sh
 echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
 
