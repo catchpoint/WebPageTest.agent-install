@@ -21,22 +21,22 @@ sudo date
 echo "$USER ALL=(ALL:ALL) NOPASSWD:ALL" | sudo EDITOR='tee -a' visudo
 
 cd ~
-until sudo apt-get update
+until sudo apt -y update
 do
     sleep 1
 done
-until sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 do
     sleep 1
 done
-sudo apt-get install -y git screen watchdog
+sudo apt -y install git screen watchdog
 until git clone https://github.com/WPO-Foundation/wptagent.git
 do
     sleep 1
 done
 git checkout origin/release
 wptagent/ubuntu_install.sh
-sudo apt-get -y autoremove
+sudo apt -y autoremove
 
 # Reboot when out of memory
 echo "vm.panic_on_oom=1" | sudo tee -a /etc/sysctl.conf
@@ -69,13 +69,13 @@ echo '#!/bin/sh' > ~/agent.sh
 echo 'export DEBIAN_FRONTEND=noninteractive' >> ~/agent.sh
 echo 'cd ~/wptagent' >> ~/agent.sh
 echo 'echo "Updating OS"' >> ~/agent.sh
-echo 'until sudo apt-get update' >> ~/agent.sh
+echo 'until sudo apt -y update' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
-echo 'until sudo DEBIAN_FRONTEND=noninteractive apt-get -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
+echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
-echo '    sudo apt-get -f install' >> ~/agent.sh
+echo '    sudo apt -f install' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 echo 'sudo npm i -g lighthouse' >> ~/agent.sh
@@ -86,8 +86,8 @@ echo "    python wptagent.py -vvvv --server \"http://$WPT_SERVER/work/\" --locat
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
-echo 'sudo apt-get -y autoremove' >> ~/agent.sh
-echo 'sudo apt-get clean' >> ~/agent.sh
+echo 'sudo apt -y autoremove' >> ~/agent.sh
+echo 'sudo apt clean' >> ~/agent.sh
 echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
 
