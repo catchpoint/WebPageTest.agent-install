@@ -38,6 +38,10 @@ git checkout origin/release
 wptagent/ubuntu_install.sh
 sudo apt -y autoremove
 
+# Minimize the space for systemd journals
+echo 'SystemMaxUse=1M' | sudo tee -a /etc/systemd/journald.conf
+sudo systemctl restart systemd-journald
+
 # Reboot when out of memory
 echo "vm.panic_on_oom=1" | sudo tee -a /etc/sysctl.conf
 echo "kernel.panic=10" | sudo tee -a /etc/sysctl.conf
@@ -84,7 +88,7 @@ echo 'do' >> ~/agent.sh
 echo '    git pull origin release' >> ~/agent.sh
 echo "    python wptagent.py -vvvv --server \"http://$WPT_SERVER/work/\" --location $WPT_LOCATION $KEY_OPTION --xvfb --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 echo '    echo "Exited, restarting"' >> ~/agent.sh
-echo '    sleep 1' >> ~/agent.sh
+echo '    sleep 10' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 echo 'sudo apt -y autoremove' >> ~/agent.sh
 echo 'sudo apt clean' >> ~/agent.sh
