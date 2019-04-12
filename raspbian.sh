@@ -25,7 +25,7 @@ echo "Trimming filesystem..."
 sudo fstrim -v /
 
 cd ~
-until sudo apt update
+until sudo apt --allow-unauthenticated update
 do
     sleep 1
 done
@@ -38,13 +38,13 @@ done
 sudo apt-mark hold raspberrypi-bootloader raspberrypi-kernel
 
 # Install OS packages
-until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+until sudo DEBIAN_FRONTEND=noninteractive apt -yq --allow-unauthenticated -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 do
     sleep 1
 done
 curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-until sudo DEBIAN_FRONTEND=noninteractive apt install -yq git screen watchdog \
+until sudo DEBIAN_FRONTEND=noninteractive apt install -yq --allow-unauthenticated git screen watchdog \
 libtiff5-dev libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk python2.7 python-pip \
 python-dev libavutil-dev libmp3lame-dev libx264-dev yasm autoconf automake build-essential libass-dev libfreetype6-dev libtheora-dev \
 libtool libvorbis-dev pkg-config texi2html zlib1g-dev libtext-unidecode-perl python-numpy python-scipy \
@@ -54,7 +54,7 @@ chromium-browser firefox-esr ttf-mscorefonts-installer fonts-noto*
 do
     sleep 1
 done
-sudo apt install -y python-software-properties
+sudo apt install -y --allow-unauthenticated python-software-properties
 until sudo npm install -g lighthouse
 do
     sleep 1
@@ -87,7 +87,7 @@ cd ~
 rm -rf ffmpeg
 
 # iOS support
-until sudo DEBIAN_FRONTEND=noninteractive apt -yq install build-essential \
+until sudo DEBIAN_FRONTEND=noninteractive apt -yq --allow-unauthenticated install build-essential \
 cmake python-dev cython swig automake autoconf libtool libusb-1.0-0 libusb-1.0-0-dev \
 libreadline-dev openssl libssl1.0.2 libssl1.1 libssl-dev
 do
@@ -245,11 +245,11 @@ echo 'cd ~/wptagent' >> ~/agent.sh
 echo 'echo "Waiting for 30 second startup delay"' >> ~/agent.sh
 echo 'sleep 30' >> ~/agent.sh
 echo 'echo "Updating OS"' >> ~/agent.sh
-echo 'until sudo apt update' >> ~/agent.sh
+echo 'until sudo apt --allow-unauthenticated update' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
-echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
+echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq --allow-unauthenticated -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    sudo apt -f install' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh

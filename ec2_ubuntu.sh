@@ -8,15 +8,15 @@ sudo date
 echo "$USER ALL=(ALL:ALL) NOPASSWD:ALL" | sudo EDITOR='tee -a' visudo
 
 cd ~
-until sudo apt -y update
+until sudo apt -y --allow-unauthenticated update
 do
     sleep 1
 done
-until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+until sudo DEBIAN_FRONTEND=noninteractive apt -yq --allow-unauthenticated -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
 do
     sleep 1
 done
-sudo apt -y install git screen watchdog
+sudo apt -y --allow-unauthenticated install git screen watchdog
 until git clone https://github.com/WPO-Foundation/wptagent.git
 do
     sleep 1
@@ -54,13 +54,13 @@ chmod +x ~/startup.sh
 # build the firstrun script
 echo '#!/bin/sh' > ~/firstrun.sh
 echo 'cd ~' >> ~/firstrun.sh
-echo 'until sudo apt -y update' >> ~/firstrun.sh
+echo 'until sudo apt -y --allow-unauthenticated update' >> ~/firstrun.sh
 echo 'do' >> ~/firstrun.sh
 echo '    sleep 1' >> ~/firstrun.sh
 echo 'done' >> ~/firstrun.sh
 echo 'sudo rm /boot/grub/menu.lst' >> ~/firstrun.sh
 echo 'sudo update-grub-legacy-ec2 -y' >> ~/firstrun.sh
-echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/firstrun.sh
+echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq --allow-unauthenticated -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/firstrun.sh
 echo 'do' >> ~/firstrun.sh
 echo '    sleep 1' >> ~/firstrun.sh
 echo 'done' >> ~/firstrun.sh
@@ -73,13 +73,13 @@ echo '#!/bin/sh' > ~/agent.sh
 echo 'export DEBIAN_FRONTEND=noninteractive' >> ~/agent.sh
 echo 'cd ~/wptagent' >> ~/agent.sh
 echo 'echo "Updating OS"' >> ~/agent.sh
-echo 'until sudo apt -y update' >> ~/agent.sh
+echo 'until sudo apt -y --allow-unauthenticated update' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 echo 'sudo rm /boot/grub/menu.lst' >> ~/agent.sh
 echo 'sudo update-grub-legacy-ec2 -y' >> ~/agent.sh
-echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
+echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq --allow-unauthenticated -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    sudo apt -f install' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
