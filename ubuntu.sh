@@ -34,7 +34,10 @@ until git clone https://github.com/WPO-Foundation/wptagent.git
 do
     sleep 1
 done
+cd ~/wptagent
 git checkout origin/release
+git pull origin release
+cd ~
 wptagent/ubuntu_install.sh
 sudo apt -y autoremove
 
