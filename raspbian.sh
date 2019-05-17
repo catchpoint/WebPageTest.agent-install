@@ -3,6 +3,25 @@
 # Prompt for the configuration options
 echo "Automatic agent install and configuration."
 echo
+
+PS3='Select agent testing mode: '
+options=("Android" "iOS" "Desktop")
+select AGENT_MODE in "${options[@]}"
+do
+    case $AGENT_MODE in
+        "Android")
+            break
+            ;;
+        "iOS")
+            break
+            ;;
+        "Desktop")
+            break
+            ;;
+        *) echo "invalid option $REPLY";;
+    esac
+done
+
 read -e -p "Disable IPv6 (recommended unless IPv6 connectivity is available) (Y/n): " -i "y" DISABLE_IPV6
 while [[ $WPT_SERVER == '' ]]
 do
@@ -31,10 +50,10 @@ do
 done
 # Known-good kernel 4.14.62
 # TODO: remove this when newer kernels stop panic'ing for netem
-until sudo rpi-update 911147a3276beee09afc4237e1b7b964e61fb88a
-do
-    sleep 1
-done
+#until sudo rpi-update 911147a3276beee09afc4237e1b7b964e61fb88a
+#do
+#    sleep 1
+#done
 sudo apt-mark hold raspberrypi-bootloader raspberrypi-kernel
 
 # Install OS packages
@@ -48,20 +67,27 @@ until sudo DEBIAN_FRONTEND=noninteractive apt install -yq git screen watchdog \
 libtiff5-dev libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk python2.7 python-pip \
 python-dev libavutil-dev libmp3lame-dev libx264-dev yasm autoconf automake build-essential libass-dev libfreetype6-dev libtheora-dev \
 libtool libvorbis-dev pkg-config texi2html zlib1g-dev libtext-unidecode-perl python-numpy python-scipy \
-imagemagick ffmpeg xvfb dbus-x11 adb \
-cgroup-tools traceroute software-properties-common psmisc libnss3-tools iproute2 net-tools ethtool nodejs \
-chromium-browser firefox-esr ttf-mscorefonts-installer fonts-noto*
+imagemagick ffmpeg adb traceroute software-properties-common psmisc libnss3-tools iproute2 net-tools ethtool nodejs
 do
     sleep 1
 done
+if [ "${AGENT_MODE,,}" == 'desktop' ]; then
+  until sudo DEBIAN_FRONTEND=noninteractive apt install -yq xvfb dbus-x11 \
+  cgroup-tools chromium-browser firefox-esr ttf-mscorefonts-installer fonts-noto*
+  do
+      sleep 1
+  done
+fi
 sudo apt install -y python-software-properties
 until sudo npm install -g lighthouse
 do
     sleep 1
 done
 sudo npm update -g
-sudo dbus-uuidgen --ensure
-sudo fc-cache -f -v
+if [ "${AGENT_MODE,,}" == 'desktop' ]; then
+  sudo dbus-uuidgen --ensure
+  sudo fc-cache -f -v
+fi
 
 # Set up python
 until sudo pip install dnspython monotonic pillow psutil pyssim requests ujson tornado wsaccel xvfbwrapper marionette_driver
@@ -87,54 +113,58 @@ cd ~
 rm -rf ffmpeg
 
 # iOS support
-until sudo DEBIAN_FRONTEND=noninteractive apt -yq install build-essential \
-cmake python-dev cython swig automake autoconf libtool libusb-1.0-0 libusb-1.0-0-dev \
-libreadline-dev openssl libssl1.0.2 libssl1.1 libssl-dev
-do
-    sleep 1
-done
-cd ~
+if [ "${AGENT_MODE,,}" == 'ios' ]; then
+  until sudo DEBIAN_FRONTEND=noninteractive apt -yq install build-essential \
+  cmake python-dev cython swig automake autoconf libtool libusb-1.0-0 libusb-1.0-0-dev \
+  libreadline-dev openssl libssl1.0.2 libssl1.1 libssl-dev
+  do
+      sleep 1
+  done
+  cd ~
 
-git clone --depth 1 https://github.com/libimobiledevice/libplist.git libplist
-cd libplist
-./autogen.sh
-make
-sudo make install
-cd ~
-rm -rf libplist
+  git clone --depth 1 https://github.com/libimobiledevice/libplist.git libplist
+  cd libplist
+  ./autogen.sh
+  make
+  sudo make install
+  cd ~
+  rm -rf libplist
 
-git clone --depth 1 https://github.com/libimobiledevice/libusbmuxd.git libusbmuxd
-cd libusbmuxd
-./autogen.sh
-make
-sudo make install
-cd ~
-rm -rf libusbmuxd
+  git clone --depth 1 https://github.com/libimobiledevice/libusbmuxd.git libusbmuxd
+  cd libusbmuxd
+  ./autogen.sh
+  make
+  sudo make install
+  cd ~
+  rm -rf libusbmuxd
 
-git clone --depth 1 https://github.com/libimobiledevice/libimobiledevice.git libimobiledevice
-cd libimobiledevice
-./autogen.sh
-make
-sudo make install
-cd ~
-rm -rf libimobiledevice
+  git clone --depth 1 https://github.com/libimobiledevice/libimobiledevice.git libimobiledevice
+  cd libimobiledevice
+  ./autogen.sh
+  make
+  sudo make install
+  cd ~
+  rm -rf libimobiledevice
 
-git clone --depth 1 https://github.com/libimobiledevice/usbmuxd.git usbmuxd
-cd usbmuxd
-./autogen.sh
-make
-sudo make install
-cd ~
-rm -rf usbmuxd
+  git clone --depth 1 https://github.com/libimobiledevice/usbmuxd.git usbmuxd
+  cd usbmuxd
+  ./autogen.sh
+  make
+  sudo make install
+  cd ~
+  rm -rf usbmuxd
 
-git clone --depth 1 https://github.com/google/ios-webkit-debug-proxy.git ios-webkit-debug-proxy
-cd ios-webkit-debug-proxy
-./autogen.sh
-make
-sudo make install
-cd ~
-rm -rf ios-webkit-debug-proxy
+  git clone --depth 1 https://github.com/google/ios-webkit-debug-proxy.git ios-webkit-debug-proxy
+  cd ios-webkit-debug-proxy
+  ./autogen.sh
+  make
+  sudo make install
+  cd ~
+  rm -rf ios-webkit-debug-proxy
 
+  sudo sh -c 'echo /usr/local/lib > /etc/ld.so.conf.d/libimobiledevice-libs.conf'
+  sudo ldconfig
+fi
 
 # System config
 echo '# Limits increased for wptagent' | sudo tee -a /etc/security/limits.conf
@@ -180,48 +210,50 @@ sudo sed -i 's/exit 0/ethtool --offload eth0 rx off tx off\nexit 0/g' /etc/netwo
 
 # configure adb
 sudo gpasswd -a $USER plugdev
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0502\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0b05\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"413c\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0489\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"04c5\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"091e\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"18d1\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"201e\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"109b\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"12d1\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"8087\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"24e3\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"2116\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"17ef\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"1004\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"22b8\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0e8d\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0409\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"2080\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0955\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"2257\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"10a9\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"1d4d\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0471\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"04da\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"05c6\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"1f53\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"04e8\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"04dd\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"054c\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0fce\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"2340\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0930\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"2970\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"1ebf\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"19d2\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"2b4c\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0bb4\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"1bbb\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
-#sudo cp ~/wptagent/misc/adb/arm/adb /usr/bin/adb
-sudo udevadm control --reload-rules
-sudo service udev restart
+if [ "${AGENT_MODE,,}" == 'android' ]; then
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0502\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0b05\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"413c\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0489\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"04c5\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"091e\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"18d1\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"201e\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"109b\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"12d1\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"8087\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"24e3\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"2116\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"17ef\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"1004\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"22b8\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0e8d\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0409\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"2080\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0955\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"2257\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"10a9\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"1d4d\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0471\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"04da\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"05c6\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"1f53\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"04e8\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"04dd\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"054c\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0fce\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"2340\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0930\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"2970\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"1ebf\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"19d2\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"2b4c\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"0bb4\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  echo "SUBSYSTEM==\"usb\", ATTR{idVendor}==\"1bbb\", MODE=\"0666\", GROUP=\"plugdev\", OWNER=\"$USER\"" | sudo tee -a /etc/udev/rules.d/51-android.rules
+  #sudo cp ~/wptagent/misc/adb/arm/adb /usr/bin/adb
+  sudo udevadm control --reload-rules
+  sudo service udev restart
+fi
 
 # build the startup script
 echo '#!/bin/sh' > ~/startup.sh
@@ -245,7 +277,7 @@ echo 'cd ~/wptagent' >> ~/agent.sh
 echo 'echo "Waiting for 30 second startup delay"' >> ~/agent.sh
 echo 'sleep 30' >> ~/agent.sh
 echo 'echo "Updating OS"' >> ~/agent.sh
-echo 'until sudo apt update' >> ~/agent.sh
+echo 'until sudo apt -y update' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
@@ -256,18 +288,33 @@ echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 echo 'sudo npm i -g lighthouse' >> ~/agent.sh
 echo 'sudo fstrim -v /' >> ~/agent.sh
+if [ "${AGENT_MODE,,}" == 'ios' ]; then
+  echo 'sudo usbmuxd' >> ~/agent.sh
+fi
 echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    git pull origin release' >> ~/agent.sh
-echo "    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
-echo "#    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --vpntether eth0,192.168.0.1 --shaper netem,eth0 --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
-echo "#    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --iOS --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+if [ "${AGENT_MODE,,}" == 'android' ]; then
+  echo "    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+  echo "#    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --vpntether eth0,192.168.0.1 --shaper netem,eth0 --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+fi
+if [ "${AGENT_MODE,,}" == 'ios' ]; then
+  echo "    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --iOS --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+fi
+if [ "${AGENT_MODE,,}" == 'desktop' ]; then
+  echo "    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+fi
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 echo 'sudo apt -y autoremove' >> ~/agent.sh
 echo 'sudo apt clean' >> ~/agent.sh
-echo 'adb reboot' >> ~/agent.sh
+if [ "${AGENT_MODE,,}" == 'android' ]; then
+  echo 'adb reboot' >> ~/agent.sh
+fi
+if [ "${AGENT_MODE,,}" == 'ios' ]; then
+  echo 'idevicediagnostics restart' >> ~/agent.sh
+fi
 echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
 
@@ -279,6 +326,7 @@ sudo apt -y autoremove
 sudo apt clean
 
 # configure watchdog
+touch /tmp/wptagent
 echo "bcm2835_wdt" | sudo tee -a /etc/modules
 sudo update-rc.d watchdog defaults
 echo "watchdog-device = /dev/watchdog" | sudo tee -a /etc/watchdog.conf
@@ -292,8 +340,15 @@ sudo systemctl start watchdog
 sudo systemctl status watchdog
 sudo systemctl enable watchdog
 
-# Handle android prompts
-adb devices -l
+# Handle device prompts
+if [ "${AGENT_MODE,,}" == 'android' ]; then
+  adb devices -l
+fi
+if [ "${AGENT_MODE,,}" == 'ios' ]; then
+  sudo usbmuxd
+  sleep 20
+  ideviceinfo
+fi
 
 cd ~
 echo
