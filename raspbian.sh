@@ -90,7 +90,7 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
 fi
 
 # Set up python
-until sudo pip install dnspython monotonic pillow psutil pyssim requests ujson tornado wsaccel xvfbwrapper marionette_driver
+until sudo pip install dnspython monotonic pillow psutil pyssim requests ujson tornado wsaccel xvfbwrapper brotli fonttools marionette_driver
 do
     sleep 1
 done
