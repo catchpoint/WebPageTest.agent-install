@@ -66,8 +66,9 @@ echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select tr
 until sudo DEBIAN_FRONTEND=noninteractive apt install -yq git screen watchdog \
 libtiff5-dev libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk python2.7 python-pip \
 python-dev libavutil-dev libmp3lame-dev libx264-dev yasm autoconf automake build-essential libass-dev libfreetype6-dev libtheora-dev \
-libtool libvorbis-dev pkg-config texi2html zlib1g-dev libtext-unidecode-perl python-numpy python-scipy \
-imagemagick ffmpeg adb traceroute software-properties-common psmisc libnss3-tools iproute2 net-tools ethtool nodejs
+libtool libvorbis-dev pkg-config texi2html libtext-unidecode-perl python-numpy python-scipy \
+imagemagick ffmpeg adb traceroute software-properties-common psmisc libnss3-tools iproute2 net-tools ethtool nodejs \
+cmake git-core libsdl2-dev libva-dev libvdpau-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev texinfo wget
 do
     sleep 1
 done
