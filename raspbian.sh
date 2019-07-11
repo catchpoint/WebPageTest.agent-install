@@ -44,7 +44,7 @@ echo "Trimming filesystem..."
 sudo fstrim -v /
 
 cd ~
-until sudo apt update
+until sudo apt -y update
 do
     sleep 1
 done

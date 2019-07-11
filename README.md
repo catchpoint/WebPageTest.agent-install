@@ -28,8 +28,10 @@ Open the cloud shell for the project where the agents will run and paste:
 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/gce_image.sh)
 ```
 
-## Raspberry Pi (Raspbian Stretch):
+## Raspberry Pi (Raspbian Stretch+):
 Still a work in progress and requires editing ~/agent.sh after install to configure tethering and traffic shaping.
+
+Desktop testing works best with Raspbian Buster or later.
 
 Warning: This takes a LONG time (several hours).  For multiple devices it is generally best to get one configured and then just clone the SD card for other devices.
 
