@@ -91,7 +91,7 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
 fi
 
 # Set up python
-until sudo pip install dnspython monotonic pillow psutil pyssim requests ujson tornado wsaccel xvfbwrapper brotli fonttools marionette_driver
+until sudo pip install dnspython monotonic pillow psutil pyssim requests git+git://github.com/marshallpierce/ultrajson.git@v1.35-gentoo-fixes tornado wsaccel xvfbwrapper brotli 'fonttools>=3.44.0,<4.0.0' marionette_driver
 do
     sleep 1
 done
@@ -304,7 +304,7 @@ if [ "${AGENT_MODE,,}" == 'ios' ]; then
   echo "    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --iOS --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 fi
 if [ "${AGENT_MODE,,}" == 'desktop' ]; then
-  echo "    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+  echo "    python wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --xvfb --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 fi
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
