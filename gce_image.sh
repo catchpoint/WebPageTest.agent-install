@@ -14,7 +14,7 @@ do
 done
 ESCAPED_METADATA=$(printf %q "$INSTANCE_METADATA")
 
-COMMAND="gcloud compute --project=${DEVSHELL_PROJECT_ID} instance-templates create ${TEMPLATE_NAME} --machine-type=n1-standard-2 --network=projects/${DEVSHELL_PROJECT_ID}/global/networks/default --metadata=wpt_data=${ESCAPED_METADATA} --no-restart-on-failure --maintenance-policy=TERMINATE --preemptible --min-cpu-platform=Automatic --image=wpt-linux-20180313 --image-project=webpagetest-official --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=${TEMPLATE_NAME}"
+COMMAND="gcloud compute --project=${DEVSHELL_PROJECT_ID} instance-templates create ${TEMPLATE_NAME} --machine-type=n1-standard-2 --network=projects/${DEVSHELL_PROJECT_ID}/global/networks/default --metadata=wpt_data=${ESCAPED_METADATA} --no-restart-on-failure --maintenance-policy=TERMINATE --preemptible --min-cpu-platform=Automatic --image=wpt-linux-20200116 --image-project=webpagetest-official --boot-disk-size=10GB --boot-disk-type=pd-standard --boot-disk-device-name=${TEMPLATE_NAME}"
 echo $COMMAND
 eval $COMMAND
 
