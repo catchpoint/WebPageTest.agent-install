@@ -61,7 +61,7 @@ until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-co
 do
     sleep 1
 done
-curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
 until sudo DEBIAN_FRONTEND=noninteractive apt install -yq git screen watchdog \
 libtiff5-dev libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk python2.7 python-pip \
