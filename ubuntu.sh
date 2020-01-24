@@ -29,7 +29,7 @@ until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-co
 do
     sleep 1
 done
-sudo apt -y install git screen watchdog
+sudo apt -y install git screen watchdog curl wget apt-transport-https
 until git clone https://github.com/WPO-Foundation/wptagent.git
 do
     sleep 1
@@ -76,6 +76,14 @@ echo '#!/bin/sh' > ~/agent.sh
 echo 'export DEBIAN_FRONTEND=noninteractive' >> ~/agent.sh
 echo 'cd ~/wptagent' >> ~/agent.sh
 echo 'echo "Updating OS"' >> ~/agent.sh
+echo 'wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -' >> ~/agent.sh
+echo 'curl -s https://brave-browser-apt-release.s3.brave.com/brave-core.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-release.gpg add -' >> ~/agent.sh
+echo 'curl -s https://brave-browser-apt-beta.s3.brave.com/brave-core-nightly.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
+echo 'curl -s https://brave-browser-apt-dev.s3.brave.com/brave-core-nightly.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
+echo 'curl -s https://brave-browser-apt-nightly.s3.brave.com/brave-core-nightly.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
+echo 'wget -qO- https://deb.opera.com/archive.key | sudo apt-key add -' >> ~/agent.sh
+echo 'sudo add-apt-repository -y ppa:ubuntu-mozilla-daily/ppa' >> ~/agent.sh
+echo 'sudo add-apt-repository -y ppa:mozillateam/ppa' >> ~/agent.sh
 echo 'until sudo apt -y update' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
