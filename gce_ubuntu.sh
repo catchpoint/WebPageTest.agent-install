@@ -16,7 +16,7 @@ until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-co
 do
     sleep 1
 done
-sudo apt -y install git screen watchdog curl wget apt-transport-https
+sudo apt -y install git screen watchdog curl wget apt-transport-https xserver-xorg-video-dummy
 until git clone https://github.com/WPO-Foundation/wptagent.git
 do
     sleep 1
@@ -89,10 +89,12 @@ echo '    sudo apt -f install' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 echo 'sudo npm i -g lighthouse' >> ~/agent.sh
+echo 'export DISPLAY=:1' >> ~/agent.sh
+echo 'Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /dev/null -config ./misc/xorg.conf :1 &' >> ~/agent.sh
 echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    git pull origin release' >> ~/agent.sh
-echo "    python wptagent.py -vvvv --gce --xvfb --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+echo "    python wptagent.py -vvvv --gce --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh

@@ -1,8 +1,8 @@
 # wptagent-install
 Automated scripts for installing dedicated wptagent agents
 
-## Ubuntu 16.04+:
-Tested on 16.04 LTS and 18.04 LTS
+## Ubuntu 18.04+:
+Tested on 18.04 LTS
 
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/ubuntu.sh)
