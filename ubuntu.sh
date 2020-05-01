@@ -1,9 +1,22 @@
 #!/bin/bash
 
+set -eu
+
+# Assign empty string if not defined
+: ${DISABLE_IPV6:=''}
+: ${WPT_SERVER:=''}
+: ${WPT_LOCATION:=''}
+: ${WPT_KEY:=''}
+
 # Prompt for the configuration options
 echo "Automatic agent install and configuration."
 echo
-read -e -p "Disable IPv6 (recommended unless IPv6 connectivity is available) (Y/n): " -i "y" DISABLE_IPV6
+
+while [[ $DISABLE_IPV6 == '' ]]
+do
+  read -e -p "Disable IPv6 (recommended unless IPv6 connectivity is available) (Y/n): " -i "y" DISABLE_IPV6
+done
+
 while [[ $WPT_SERVER == '' ]]
 do
   read -p "WebPageTest server (i.e. www.webpagetest.org): " WPT_SERVER
@@ -12,7 +25,11 @@ while [[ $WPT_LOCATION == '' ]]
 do
   read -p "Location ID (i.e. Dulles): " WPT_LOCATION
 done
-read -p "Location Key (if required): " WPT_KEY
+while [[ $WPT_KEY == '' ]]
+do
+  read -p "Location Key (if required): " WPT_KEY
+done
+
 
 # Pre-prompt for the sudo authorization so it doesn't prompt later
 sudo date
