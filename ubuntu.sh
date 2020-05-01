@@ -1,5 +1,13 @@
 #!/bin/bash
 
+set -eu
+
+# Assign empty string if not defined
+: ${DISABLE_IPV6:=''}
+: ${WPT_SERVER:=''}
+: ${WPT_LOCATION:=''}
+: ${WPT_KEY:=''}
+
 # Prompt for the configuration options
 echo "Automatic agent install and configuration."
 echo
