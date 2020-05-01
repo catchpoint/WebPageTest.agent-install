@@ -1,0 +1,20 @@
+name: Test for Ubuntu
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    env:
+      WPT_SERVER: "www.webpagetest.org"
+      WPT_LOCATION: Tokyo
+      DISABLE_IPV6: y
+      WPT_KEY: foobar
+      # for msodbcsql17 package
+      ACCEPT_EULA: Y
+
+    steps:
+      - uses: actions/checkout@v1
+      - run: ./ubuntu.sh
+      - name: test
+        run: chmod +x ./.github/workflows/test.sh && ./.github/workflows/test.sh
