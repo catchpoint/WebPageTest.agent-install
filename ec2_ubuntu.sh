@@ -19,11 +19,11 @@ do
     sleep 1
 done
 sudo apt -y install git screen watchdog curl wget apt-transport-https xserver-xorg-video-dummy
-until git clone https://github.com/WPO-Foundation/wptagent.git
+until git clone --branch=release https://github.com/WPO-Foundation/wptagent.git
 do
     sleep 1
 done
-git checkout origin/release
+
 wptagent/ubuntu_install.sh
 sudo apt -y autoremove
 

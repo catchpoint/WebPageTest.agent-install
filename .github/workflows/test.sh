@@ -11,6 +11,12 @@ dpkg --status wget > /dev/null
 dpkg --status apt-transport-https > /dev/null
 dpkg --status xserver-xorg-video-dummy > /dev/null
 
+cd "${HOME}/wptagent"
+# Test if current branch is `release`
+test "$(git branch | grep "*")" == "* release"
+
+test -f "${HOME}/wptagent/wptagent.py"
+
 test -f "${HOME}/startup.sh"
 test -f "${HOME}/agent.sh"
 
