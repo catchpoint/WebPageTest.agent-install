@@ -35,7 +35,7 @@ done
 sudo date
 
 # Make sure sudo doesn't prompt for a password
-echo "$USER ALL=(ALL:ALL) NOPASSWD:ALL" | sudo EDITOR='tee -a' visudo
+echo "${USER} ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/wptagent"
 
 cd ~
 until sudo apt -y update
@@ -59,18 +59,23 @@ wptagent/ubuntu_install.sh
 sudo apt -y autoremove
 
 # Minimize the space for systemd journals
-echo 'SystemMaxUse=1M' | sudo tee -a /etc/systemd/journald.conf
+sudo mkdir --mode=755 /etc/systemd/journald.conf.d
+echo 'SystemMaxUse=1M' | sudo tee /etc/systemd/journald.conf.d/wptagent.conf
 sudo systemctl restart systemd-journald
 
 # Reboot when out of memory
-echo "vm.panic_on_oom=1" | sudo tee -a /etc/sysctl.conf
-echo "kernel.panic=10" | sudo tee -a /etc/sysctl.conf
+cat << _SYSCTL_ | sudo tee /etc/sysctl.d/60-wptagent-dedicated.conf
+vm.panic_on_oom = 1
+kernel.panic = 10
+_SYSCTL_
 
 # disable IPv6 if requested
 if [ "${DISABLE_IPV6,,}" == 'y' ]; then
-  echo "net.ipv6.conf.all.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
-  echo "net.ipv6.conf.default.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
-  echo "net.ipv6.conf.lo.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
+    cat << _SYSCTL_NO_IPV6_ | sudo tee /etc/sysctl.d/60-wptagent-no-ipv6.conf
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
+_SYSCTL_NO_IPV6_
 fi
 
 # configure watchdog
@@ -126,8 +131,7 @@ echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
 
 # add it to the crontab
-CRON_ENTRY="@reboot $PWD/startup.sh"
-( crontab -l | grep -v -F "$CRON_ENTRY" ; echo "$CRON_ENTRY" ) | crontab -
+echo "@reboot ${PWD}/startup.sh" | sudo tee /etc/cron.d/wptagent
 
 echo
 echo "Install is complete.  Please reboot the system to start testing (sudo reboot)"

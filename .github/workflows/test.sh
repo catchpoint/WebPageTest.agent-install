@@ -14,7 +14,8 @@ dpkg --status xserver-xorg-video-dummy > /dev/null
 test -f "${HOME}/startup.sh"
 test -f "${HOME}/agent.sh"
 
-test "$(cat /etc/systemd/journald.conf | grep "SystemMaxUse=1M")" == "SystemMaxUse=1M"
+test "$(sudo cat /etc/sudoers.d/wptagent)" == "${USER} ALL=(ALL:ALL) NOPASSWD:ALL"
+test "$(cat /etc/systemd/journald.conf.d/wptagent.conf)" == "SystemMaxUse=1M"
 test "$(cat /etc/watchdog.conf | grep "test-binary = $HOME/wptagent/alive.sh")" == "test-binary = $HOME/wptagent/alive.sh"
 
 sudo sysctl --load
