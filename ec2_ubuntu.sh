@@ -115,5 +115,4 @@ chmod +x ~/agent.sh
 echo "@reboot ${PWD}/startup.sh" | sudo tee /etc/cron.d/wptagent
 
 echo
-echo "Install is complete.  Rebooting..."
-sudo reboot
+echo "Install is complete.  Please reboot the system to start testing (sudo reboot)"
