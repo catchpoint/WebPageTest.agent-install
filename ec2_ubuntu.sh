@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 # Prompt for the configuration options
 echo "Automatic agent install and configuration."
 
