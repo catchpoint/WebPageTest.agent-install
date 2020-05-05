@@ -21,6 +21,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
+      - name: remove unnecessary packages for faster build time
+        run: |
+          sudo DEBIAN_FRONTEND=noninteractive apt-get remove -y ansible azure-cli dotnet-sdk-3.1 g++-9 gfortran-9 google-cloud-sdk heroku kubectl mongodb-org mongodb-org-* mysql-* openjdk-* php7.* sbt
+          sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove -y
+
       - run: ./${{ matrix.script }}
       - name: test (common)
         run: ./.github/workflows/test.sh
