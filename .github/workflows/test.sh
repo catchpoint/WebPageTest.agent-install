@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
+set -eux
 
 # Check if packages are installed
 dpkg --status git > /dev/null
