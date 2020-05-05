@@ -21,3 +21,7 @@ sudo sysctl --load
 
 test "$(sysctl vm.panic_on_oom)" == "vm.panic_on_oom = 1"
 test "$(sysctl kernel.panic)" == "kernel.panic = 10"
+
+test "$(sysctl net.ipv6.conf.all.disable_ipv6)" == "net.ipv6.conf.all.disable_ipv6 = 1"
+test "$(sysctl net.ipv6.conf.default.disable_ipv6)" == "net.ipv6.conf.default.disable_ipv6 = 1"
+test "$(sysctl net.ipv6.conf.lo.disable_ipv6)" == "net.ipv6.conf.lo.disable_ipv6 = 1"
