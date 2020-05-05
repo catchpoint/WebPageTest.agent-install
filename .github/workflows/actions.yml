@@ -23,7 +23,7 @@ jobs:
       - uses: actions/checkout@v1
       - run: ./${{ matrix.script }}
       - name: test (common)
-        run: chmod +x ./.github/workflows/test.sh && ./.github/workflows/test.sh
+        run: ./.github/workflows/test.sh
       - name: test (specific for ${{ matrix.script }})
         run: |
           if [[ -f ./.github/workflows/test_${{ matrix.script }} ]]; then
