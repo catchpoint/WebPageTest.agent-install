@@ -5,6 +5,12 @@ on: [push, pull_request]
 jobs:
   build:
     runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        script:
+          - ubuntu.sh
+          - ec2_ubuntu.sh
+          - gce_ubuntu.sh
     env:
       WPT_SERVER: "www.webpagetest.org"
       WPT_LOCATION: Tokyo
@@ -15,6 +21,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
-      - run: ./ubuntu.sh
-      - name: test
-        run: chmod +x ./.github/workflows/test.sh && ./.github/workflows/test.sh
+      - name: remove unnecessary packages for faster build time
+        run: |
+          sudo DEBIAN_FRONTEND=noninteractive apt-get remove -y ansible azure-cli dotnet-sdk-3.1 g++-9 gfortran-9 google-cloud-sdk heroku kubectl mongodb-org mongodb-org-* mysql-* openjdk-* php7.* sbt
+          sudo DEBIAN_FRONTEND=noninteractive apt-get autoremove -y
+
+      - run: ./${{ matrix.script }}
+      - name: test (common)
+        run: ./.github/workflows/test.sh
+      - name: test (specific for ${{ matrix.script }})
+        run: |
+          if [[ -f ./.github/workflows/test_${{ matrix.script }} ]]; then
+            ./.github/workflows/test_${{ matrix.script }}
+          fi

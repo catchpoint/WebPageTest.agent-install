@@ -1,11 +1,13 @@
 #!/bin/bash
 
+set -eu
+
 # Prompt for the configuration options
 echo "Automatic agent install and configuration."
 
 # Make sure sudo doesn't prompt for a password
 sudo date
-echo "$USER ALL=(ALL:ALL) NOPASSWD:ALL" | sudo EDITOR='tee -a' visudo
+echo "${USER} ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/wptagent"
 
 cd ~
 until sudo apt -y update
@@ -17,22 +19,26 @@ do
     sleep 1
 done
 sudo apt -y install git screen watchdog curl wget apt-transport-https xserver-xorg-video-dummy
-until git clone https://github.com/WPO-Foundation/wptagent.git
+until git clone --branch=release https://github.com/WPO-Foundation/wptagent.git
 do
     sleep 1
 done
-git checkout origin/release
+
 wptagent/ubuntu_install.sh
 sudo apt -y autoremove
 
 # Reboot when out of memory
-echo "vm.panic_on_oom=1" | sudo tee -a /etc/sysctl.conf
-echo "kernel.panic=10" | sudo tee -a /etc/sysctl.conf
+cat << _SYSCTL_ | sudo tee /etc/sysctl.d/60-wptagent-dedicated.conf
+vm.panic_on_oom = 1
+kernel.panic = 10
+_SYSCTL_
 
 # disable IPv6
-echo "net.ipv6.conf.all.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
-echo "net.ipv6.conf.default.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
-echo "net.ipv6.conf.lo.disable_ipv6 = 1" | sudo tee -a /etc/sysctl.conf
+cat << _SYSCTL_NO_IPV6_ | sudo tee /etc/sysctl.d/60-wptagent-no-ipv6.conf
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
+_SYSCTL_NO_IPV6_
 
 # configure watchdog
 cd ~
@@ -104,9 +110,7 @@ echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
 
 # add it to the crontab
-CRON_ENTRY="@reboot $PWD/startup.sh"
-( crontab -l | grep -v -F "$CRON_ENTRY" ; echo "$CRON_ENTRY" ) | crontab -
+echo "@reboot ${PWD}/startup.sh" | sudo tee /etc/cron.d/wptagent
 
 echo
-echo "Install is complete.  Rebooting..."
-sudo reboot
+echo "Install is complete.  Please reboot the system to start testing (sudo reboot)"
