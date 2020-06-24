@@ -76,6 +76,7 @@ chmod +x ~/firstrun.sh
 
 # build the agent script
 echo '#!/bin/sh' > ~/agent.sh
+echo 'echo tsc > /sys/devices/system/clocksource/clocksource0/current_clocksource' > ~/agent.sh
 echo 'export DEBIAN_FRONTEND=noninteractive' >> ~/agent.sh
 echo 'cd ~/wptagent' >> ~/agent.sh
 echo 'echo "Updating OS"' >> ~/agent.sh
