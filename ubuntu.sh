@@ -53,7 +53,7 @@ do
     sleep 1
 done
 
-#wptagent/ubuntu_install.sh
+wptagent/ubuntu_install.sh
 sudo apt -y autoremove
 
 # Minimize the space for systemd journals
