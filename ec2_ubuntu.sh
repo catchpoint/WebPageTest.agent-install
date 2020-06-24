@@ -121,7 +121,8 @@ echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
 
 # add it to the crontab
-echo "@reboot ${PWD}/startup.sh" | sudo tee /etc/cron.d/wptagent
+CRON_ENTRY="@reboot ${PWD}/startup.sh"
+( crontab -l | grep -v -F "$CRON_ENTRY" ; echo "$CRON_ENTRY" ) | crontab -
 
 echo
 echo "Install is complete.  Please reboot the system to start testing (sudo reboot)"
