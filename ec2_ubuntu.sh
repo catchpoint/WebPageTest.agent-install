@@ -2,6 +2,8 @@
 
 set -eu
 
+: ${UBUNTU_VERSION:=`(lsb_release -rs | cut -b 1,2)`}
+
 # Prompt for the configuration options
 echo "Automatic agent install and configuration."
 
@@ -76,7 +78,7 @@ chmod +x ~/firstrun.sh
 
 # build the agent script
 echo '#!/bin/sh' > ~/agent.sh
-echo 'echo tsc > /sys/devices/system/clocksource/clocksource0/current_clocksource' > ~/agent.sh
+echo 'echo tsc | sudo tee /sys/devices/system/clocksource/clocksource0/current_clocksource' > ~/agent.sh
 echo 'export DEBIAN_FRONTEND=noninteractive' >> ~/agent.sh
 echo 'cd ~/wptagent' >> ~/agent.sh
 echo 'echo "Updating OS"' >> ~/agent.sh
@@ -105,7 +107,11 @@ echo 'Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /
 echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    git pull origin release' >> ~/agent.sh
-echo "    python wptagent.py -vvvv --ec2 --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+if [ "$UBUNTU_VERSION" \< "20" ]; then
+    echo "    python wptagent.py -vvvv --ec2 --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+else
+    echo "    python3 wptagent.py -vvvv --ec2 --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+fi
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh

@@ -2,6 +2,8 @@
 
 set -eu
 
+: ${UBUNTU_VERSION:=`(lsb_release -rs | cut -b 1,2)`}
+
 # Prompt for the configuration options
 echo "Automatic agent install and configuration."
 
@@ -100,7 +102,11 @@ echo 'Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /
 echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    git pull origin release' >> ~/agent.sh
-echo "    python wptagent.py -vvvv --gce --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+if [ "$UBUNTU_VERSION" \< "20" ]; then
+    echo "    python wptagent.py -vvvv --gce --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+else
+    echo "    python3 wptagent.py -vvvv --gce --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+fi
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 1' >> ~/agent.sh
 echo 'done' >> ~/agent.sh

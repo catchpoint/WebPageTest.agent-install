@@ -7,6 +7,7 @@ set -eu
 : ${WPT_SERVER:=''}
 : ${WPT_LOCATION:=''}
 : ${WPT_KEY:=''}
+: ${UBUNTU_VERSION:=`(lsb_release -rs | cut -b 1,2)`}
 
 # Prompt for the configuration options
 echo "Automatic agent install and configuration."
@@ -52,7 +53,7 @@ do
     sleep 1
 done
 
-wptagent/ubuntu_install.sh
+#wptagent/ubuntu_install.sh
 sudo apt -y autoremove
 
 # Minimize the space for systemd journals
@@ -118,7 +119,11 @@ echo 'Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /
 echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 echo '    git pull origin release' >> ~/agent.sh
-echo "    python wptagent.py -vvvv --server \"http://$WPT_SERVER/work/\" --location $WPT_LOCATION $KEY_OPTION --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+if [ "$UBUNTU_VERSION" \< "20" ]; then
+  echo "    python wptagent.py -vvvv --server \"http://$WPT_SERVER/work/\" --location $WPT_LOCATION $KEY_OPTION --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+else
+  echo "    python3 wptagent.py -vvvv --server \"http://$WPT_SERVER/work/\" --location $WPT_LOCATION $KEY_OPTION --throttle --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+fi
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 10' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
