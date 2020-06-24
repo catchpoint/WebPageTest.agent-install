@@ -44,7 +44,11 @@ _SYSCTL_NO_IPV6_
 
 # configure watchdog
 cd ~
-echo "test-binary = $PWD/wptagent/alive.sh" | sudo tee -a /etc/watchdog.conf
+if [ "$UBUNTU_VERSION" \< "20" ]; then
+  echo "test-binary = $PWD/wptagent/alive.sh" | sudo tee -a /etc/watchdog.conf
+else
+  echo "test-binary = $PWD/wptagent/alive3.sh" | sudo tee -a /etc/watchdog.conf
+fi
 
 # build the startup script
 echo '#!/bin/sh' > ~/startup.sh
