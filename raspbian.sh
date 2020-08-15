@@ -115,6 +115,10 @@ rm -rf ffmpeg
 
 # iOS support
 if [ "${AGENT_MODE,,}" == 'ios' ]; then
+  until sudo pip install usbmuxwrapper
+  do
+      sleep 1
+  done
   until sudo DEBIAN_FRONTEND=noninteractive apt -yq install build-essential \
   cmake python-dev cython swig automake autoconf libtool libusb-1.0-0 libusb-1.0-0-dev \
   libreadline-dev openssl libssl1.0.2 libssl1.1 libssl-dev
