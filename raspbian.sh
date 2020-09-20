@@ -91,7 +91,7 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
 fi
 
 # Set up python
-until sudo pip install dnspython monotonic pillow psutil pyssim requests git+git://github.com/marshallpierce/ultrajson.git@v1.35-gentoo-fixes tornado wsaccel xvfbwrapper brotli 'fonttools>=3.44.0,<4.0.0' marionette_driver
+until sudo pip install dnspython monotonic pillow psutil pyssim requests git+git://github.com/marshallpierce/ultrajson.git@v1.35-gentoo-fixes tornado wsaccel xvfbwrapper brotli 'fonttools>=3.44.0,<4.0.0' marionette_driver usbmuxwrapper
 do
     sleep 1
 done
