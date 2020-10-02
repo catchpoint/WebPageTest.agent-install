@@ -97,6 +97,8 @@ fi
 # Agent code
 #**************************************************************************************************
 
+cd ~
+rm -rf wptagent
 until git clone --depth 1 --branch=release https://github.com/WPO-Foundation/wptagent.git
 do
     sleep 1
