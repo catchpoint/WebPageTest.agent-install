@@ -2,22 +2,22 @@
 Automated scripts for installing dedicated wptagent agents
 
 ## Ubuntu 18.04+:
-Tested on 18.04 LTS
+Tested on 18.04 LTS and 20.04 LTS
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/ubuntu.sh)
+bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
 ```
 
 ### on Google Cloud:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/gce_ubuntu.sh)
+WPT_CLOUD=gce bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
 ```
 
 ### on Amazon EC2:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/ec2_ubuntu.sh)
+WPT_CLOUD=ec2 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
 ```
 
 ## Google Cloud Shared Image
@@ -36,5 +36,5 @@ Desktop testing works best with Raspbian Buster or later.
 Warning: This takes a LONG time (several hours).  For multiple devices it is generally best to get one configured and then just clone the SD card for other devices.
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/raspbian.sh)
+bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
 ```
