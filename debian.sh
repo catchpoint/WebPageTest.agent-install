@@ -9,6 +9,13 @@
 #
 # WPT_CLOUD: blank, ec2 or gce
 # AGENT_MODE: desktop, ios, android (defaults to desktop)
+#
+# Flags - y = enable, n = disable
+#
+# WPT_UPDATE_OS : dist-upgrade all of the existing OS packages every time the agent starts (daily)
+# WPT_UPDATE_OS_NOW : dist-upgrade all of the existing OS packages now (during the install)
+# WPT_UPDATE_BROWSERS : Update the browser install certificates and installations automatically daily
+# WPT_UPDATE_AGENT : Update the agent code from github release branch hourly and lighthouse daily
 
 #**************************************************************************************************
 # Configure Defaults
@@ -22,6 +29,7 @@ set -eu
 : ${WPT_CLOUD:=''}
 : ${AGENT_MODE:='desktop'}
 : ${WPT_UPDATE_OS:='y'}
+: ${WPT_UPDATE_OS_NOW:='y'}
 : ${WPT_UPDATE_AGENT:='y'}
 : ${WPT_UPDATE_BROWSERS:='y'}
 : ${WPT_CHROME:='y'}
@@ -69,10 +77,13 @@ until sudo apt -y update
 do
     sleep 1
 done
-until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
-do
-    sleep 1
-done
+
+if [ "${WPT_UPDATE_OS_NOW,,}" == 'y' ]; then
+    until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
+    do
+        sleep 1
+    done
+fi
 
 # Pin the kernel for Raspbian so it doesn't accidentally update to a broken kernel (has happened before)
 if [ "${LINUX_DISTRO}" == 'Raspbian' ]; then
@@ -527,13 +538,21 @@ fi
 if [ "${AGENT_MODE,,}" == 'ios' ]; then
     echo 'sudo usbmuxd' >> ~/agent.sh
 fi
+
+# Dummy X display
 if [ "${AGENT_MODE,,}" == 'desktop' ]; then
     echo 'export DISPLAY=:1' >> ~/agent.sh
     echo 'Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /dev/null -config ./misc/xorg.conf :1 &' >> ~/agent.sh
 fi
+
 echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
-echo '    git pull origin release' >> ~/agent.sh
+
+if [ "${WPT_UPDATE_AGENT,,}" == 'y' ]; then
+    echo '    git pull origin release' >> ~/agent.sh
+fi
+
+# Agent invocation (depending on config)
 if [ "${AGENT_MODE,,}" == 'android' ]; then
     echo "    python3 wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
     echo "#    python3 wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --vpntether eth0,192.168.0.1 --shaper netem,eth0 --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
@@ -550,6 +569,7 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
         echo "    python3 wptagent.py -vvvv --server \"http://$WPT_SERVER/work/\" --location $WPT_LOCATION $KEY_OPTION --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
     fi
 fi
+
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 10' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
