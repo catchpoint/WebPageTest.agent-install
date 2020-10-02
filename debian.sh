@@ -475,8 +475,15 @@ echo '#!/bin/sh' > ~/agent.sh
 echo 'export DEBIAN_FRONTEND=noninteractive' >> ~/agent.sh
 echo 'cd ~/wptagent' >> ~/agent.sh
 
+# Wait for networking to become available and update the package list
+echo 'sleep 10' >> ~/agent.sh
+
 # Browser Certificates
 if [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
+    echo 'until sudo apt -y update' >> ~/agent.sh
+    echo 'do' >> ~/agent.sh
+    echo '    sleep 1' >> ~/agent.sh
+    echo 'done' >> ~/agent.sh
     if [ "${LINUX_DISTRO}" != 'Raspbian' ]; then
         echo 'echo "Updating browser certificates"' >> ~/agent.sh
         if [ "${WPT_CHROME,,}" == 'y' ]; then
@@ -518,10 +525,6 @@ if [ "${WPT_UPDATE_OS,,}" == 'y' ]; then
     echo '    sleep 1' >> ~/agent.sh
     echo 'done' >> ~/agent.sh
 elif [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
-    echo 'until sudo apt -y update' >> ~/agent.sh
-    echo 'do' >> ~/agent.sh
-    echo '    sleep 1' >> ~/agent.sh
-    echo 'done' >> ~/agent.sh
     if [ "${LINUX_DISTRO}" == 'Raspbian' ]; then
         echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq --only-upgrade install chromium-browser firefox-esr' >> ~/agent.sh
     else
