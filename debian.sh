@@ -599,7 +599,7 @@ chmod +x ~/agent.sh
 
 # add it to the crontab
 CRON_ENTRY="@reboot ${PWD}/startup.sh"
-( crontab -l | grep -v -F "$CRON_ENTRY" ; echo "$CRON_ENTRY" ) | crontab -
+( crontab -l 2>/dev/null; echo "$CRON_ENTRY" ) | crontab -
 
 echo
 echo "Install is complete.  Please reboot the system to start testing (sudo reboot)"
