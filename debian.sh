@@ -392,7 +392,7 @@ fi
 sudo apt -y autoremove
 
 # Minimize the space for systemd journals
-sudo mkdir --mode=755 /etc/systemd/journald.conf.d
+sudo mkdir --mode=755 /etc/systemd/journald.conf.d || true
 echo 'SystemMaxUse=1M' | sudo tee /etc/systemd/journald.conf.d/wptagent.conf
 sudo systemctl restart systemd-journald
 
