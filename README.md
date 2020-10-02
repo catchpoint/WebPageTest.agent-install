@@ -32,6 +32,9 @@ Browsers:
 * **WPT_VIVALDI** - "y" or "n" (default) : Install Vivaldi
 
 For convenience, the github url is also available shortened as http://tiny.cc/wptagent
+```bash
+WPT_SERVER="webpagetest.mycompany.com" WPT_LOCATION="Dulles" WPT_KEY="xxxSomeSecretKeyxxx" DISABLE_IPV6=y WPT_OPERA=y WPT_VIVALDI=y bash <(curl -sL http://tiny.cc/wptagent)
+```
 
 ## Ubuntu 18.04+:
 Tested on 18.04 LTS and 20.04 LTS
