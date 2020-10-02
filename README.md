@@ -1,6 +1,36 @@
 # wptagent-install
 Automated scripts for installing dedicated wptagent agents
 
+For the debian.sh script, there are several environment variables that can control the options:
+
+i.e.
+```bash
+WPT_SERVER="webpagetest.mycompany.com" WPT_LOCATION="Dulles" WPT_KEY="xxxSomeSecretKeyxxx" DISABLE_IPV6=y WPT_OPERA=y WPT_VIVALDI=y bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
+```
+
+Location config (these will prompt if not specified and not installing for cloud):
+* **WPT_SERVER** - WebPageTest server. i.e. WPT_SERVER="webpagetest.mycompany.com"
+* **WPT_LOCATION** - Location ID for the agent. i.e. WPT_LOCATION="Dulles"
+* **WPT_KEY** - Key for the location
+
+Agent:
+* **WPT_CLOUD** - blank (default) for no cloud. "ec2" or "gce" to get config dynamically from user data in Google or Amazon cloud.
+* **AGENT_MODE** - "desktop" (default), "ios" or "android".
+* **WPT_UPDATE_AGENT** - "y" (default) or "n" : automatically update the agent from GitHub's release branch hourly and Lighthouse daily.
+
+OS:
+* **DISABLE_IPV6** - "y" or "n" (default) : disable IPv6 networking (recommended for systems without IPv6 connectivity).
+* **WPT_UPDATE_OS** - "y" (default) or "n" : Automatically apt dist-upgrade all packages daily after reboot.
+* **WPT_UPDATE_OS_NOW** - "y" (default) or "n" : apt dist-upgrade all packages as part of the initial agent setup.
+
+Browsers:
+* **WPT_UPDATE_BROWSERS** - "y" (default) or "n" : Re-install the certificates for browser installers daily so they stay up to date and automatically update the browsers daily.
+* **WPT_CHROME** - "y" (default) or "n" : Install Google Chrome (stable, beta and dev channels)
+* **WPT_FIREFOX** - "y" (default) or "n" : Install Mozilla Firefox (Stable, ESR and Nightly)
+* **WPT_BRAVE** - "y" (default) or "n" : Install The Brave Browser (stable, beta and dev channels)
+* **WPT_OPERA** - "y" or "n" (default) : Install Opera (stable, beta and dev channels)
+* **WPT_VIVALDI** - "y" or "n" (default) : Install Vivaldi
+
 ## Ubuntu 18.04+:
 Tested on 18.04 LTS and 20.04 LTS
 

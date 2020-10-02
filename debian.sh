@@ -22,7 +22,7 @@
 #**************************************************************************************************
 
 set -eu
-: ${DISABLE_IPV6:=''}
+: ${DISABLE_IPV6:='n'}
 : ${WPT_SERVER:=''}
 : ${WPT_LOCATION:=''}
 : ${WPT_KEY:=''}
@@ -52,19 +52,20 @@ do
   read -e -p "Disable IPv6 (recommended unless IPv6 connectivity is available) (Y/n): " -i "y" DISABLE_IPV6
 done
 
-while [[ $WPT_SERVER == '' ]]
-do
-  read -p "WebPageTest server (i.e. www.webpagetest.org): " WPT_SERVER
-done
-while [[ $WPT_LOCATION == '' ]]
-do
-  read -p "Location ID (i.e. Dulles): " WPT_LOCATION
-done
-while [[ $WPT_KEY == '' ]]
-do
-  read -p "Location Key (if required): " WPT_KEY
-done
-
+if [ "${WPT_CLOUD,,}" != 'gce' ] && [ "${WPT_CLOUD,,}" != 'ec2' ]; then
+    while [[ $WPT_SERVER == '' ]]
+    do
+    read -p "WebPageTest server (i.e. www.webpagetest.org): " WPT_SERVER
+    done
+    while [[ $WPT_LOCATION == '' ]]
+    do
+    read -p "Location ID (i.e. Dulles): " WPT_LOCATION
+    done
+    while [[ $WPT_KEY == '' ]]
+    do
+    read -p "Location Key (if required): " WPT_KEY
+    done
+fi
 
 # Pre-prompt for the sudo authorization so it doesn't prompt later
 sudo date
