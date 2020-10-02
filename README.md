@@ -31,6 +31,8 @@ Browsers:
 * **WPT_OPERA** - "y" or "n" (default) : Install Opera (stable, beta and dev channels)
 * **WPT_VIVALDI** - "y" or "n" (default) : Install Vivaldi
 
+For convenience, the github url is also available shortened as http://tiny.cc/wptagent
+
 ## Ubuntu 18.04+:
 Tested on 18.04 LTS and 20.04 LTS
 
