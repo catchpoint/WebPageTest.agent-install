@@ -297,7 +297,7 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
         fi
 
         if [ "${WPT_VIVALDI,,}" == 'y' ]; then
-            wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | sudo apt-key add -
+            wget -qO- https://www.webpagetest.org/keys/vivaldi/linux_signing_key.pub | sudo apt-key add -
             sudo add-apt-repository 'deb https://repo.vivaldi.com/archive/deb/ stable main' 
             until sudo apt -y update
             do
@@ -310,7 +310,7 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
         fi
     else
         if [ "${WPT_CHROME,,}" == 'y' ]; then
-            wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+            wget -q -O - https://www.webpagetest.org/keys/google/linux_signing_key.pub | sudo apt-key add -
             sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
             until sudo apt -y update
             do
@@ -370,7 +370,7 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
         fi
 
         if [ "${WPT_VIVALDI,,}" == 'y' ]; then
-            wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | sudo apt-key add -
+            wget -qO- https://www.webpagetest.org/keys/vivaldi/linux_signing_key.pub | sudo apt-key add -
             sudo add-apt-repository 'deb https://repo.vivaldi.com/archive/deb/ stable main' 
             until sudo apt -y update
             do
@@ -488,7 +488,7 @@ if [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
     if [ "${LINUX_DISTRO}" != 'Raspbian' ]; then
         echo 'echo "Updating browser certificates"' >> ~/agent.sh
         if [ "${WPT_CHROME,,}" == 'y' ]; then
-            echo 'wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -' >> ~/agent.sh
+            echo 'wget -q -O - https://www.webpagetest.org/keys/google/linux_signing_key.pub | sudo apt-key add -' >> ~/agent.sh
         fi
 
         if [ "${WPT_FIREFOX,,}" == 'y' ]; then
@@ -509,7 +509,7 @@ if [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
     fi
 
     if [ "${WPT_VIVALDI,,}" == 'y' ]; then
-        echo 'wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | sudo apt-key add -' >> ~/agent.sh
+        echo 'wget -qO- https://www.webpagetest.org/keys/vivaldi/linux_signing_key.pub | sudo apt-key add -' >> ~/agent.sh
     fi
 fi
 
