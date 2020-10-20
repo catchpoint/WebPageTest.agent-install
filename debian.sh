@@ -35,6 +35,7 @@ set -eu
 : ${WPT_CHROME:='y'}
 : ${WPT_FIREFOX:='y'}
 : ${WPT_BRAVE:='y'}
+: ${WPT_EDGE:='y'}
 : ${WPT_OPERA:='n'}
 : ${WPT_VIVALDI:='n'}
 : ${LINUX_DISTRO:=`(lsb_release -is)`}
@@ -354,6 +355,19 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
             done
         fi
 
+        if [ "${WPT_EDGE,,}" == 'y' ]; then
+            curl -s https://www.webpagetest.org/keys/microsoft/microsoft.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/microsoft.gpg add -
+            echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" | sudo tee /etc/apt/sources.list.d/microsoft-edge-dev.list
+            until sudo apt -y update
+            do
+                sleep 1
+            done
+            until sudo apt -yq install microsoft-edge-dev
+            do
+                sleep 1
+            done
+        fi
+
         if [ "${WPT_OPERA,,}" == 'y' ]; then
             wget -qO- https://www.webpagetest.org/keys/opera/archive.key | sudo apt-key add -
             sudo add-apt-repository -y 'deb https://deb.opera.com/opera-stable/ stable non-free'
@@ -501,6 +515,10 @@ if [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
             echo 'curl -s https://www.webpagetest.org/keys/brave/beta.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
             echo 'curl -s https://www.webpagetest.org/keys/brave/dev.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
             echo 'curl -s https://www.webpagetest.org/keys/brave/nightly.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
+        fi
+
+        if [ "${WPT_EDGE,,}" == 'y' ]; then
+            echo 'curl -s https://www.webpagetest.org/keys/microsoft/microsoft.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/microsoft.gpg add -' >> ~/agent.sh
         fi
 
         if [ "${WPT_OPERA,,}" == 'y' ]; then

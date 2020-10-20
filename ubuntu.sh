@@ -105,6 +105,7 @@ echo 'curl -s https://www.webpagetest.org/keys/brave/release.asc | sudo apt-key 
 echo 'curl -s https://www.webpagetest.org/keys/brave/beta.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
 echo 'curl -s https://www.webpagetest.org/keys/brave/dev.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
 echo 'curl -s https://www.webpagetest.org/keys/brave/nightly.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
+echo 'curl -s https://www.webpagetest.org/keys/microsoft/microsoft.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/microsoft.gpg add -' >> ~/agent.sh
 echo 'wget -qO- https://www.webpagetest.org/keys/opera/archive.key | sudo apt-key add -' >> ~/agent.sh
 echo 'sudo add-apt-repository -y ppa:ubuntu-mozilla-daily/ppa' >> ~/agent.sh
 echo 'sudo add-apt-repository -y ppa:mozillateam/ppa' >> ~/agent.sh
