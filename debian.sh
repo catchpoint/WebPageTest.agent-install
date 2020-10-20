@@ -414,6 +414,7 @@ sudo systemctl restart systemd-journald
 cat << _SYSCTL_ | sudo tee /etc/sysctl.d/60-wptagent-dedicated.conf
 vm.panic_on_oom = 1
 kernel.panic = 10
+net.ipv4.tcp_syn_retries = 4
 _SYSCTL_
 
 # disable IPv6 if requested
@@ -424,6 +425,12 @@ net.ipv6.conf.default.disable_ipv6 = 1
 net.ipv6.conf.lo.disable_ipv6 = 1
 _SYSCTL_NO_IPV6_
 fi
+
+cat << _LIMITS_ | sudo tee /etc/security/limits.d/wptagent.conf
+# Limits increased for wptagent
+* soft nofile 250000
+* hard nofile 300000
+_LIMITS_
 
 if [ "${LINUX_DISTRO}" == 'Raspbian' ]; then
     # Boot options
