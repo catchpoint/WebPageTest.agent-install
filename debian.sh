@@ -36,6 +36,7 @@ set -eu
 : ${WPT_FIREFOX:='y'}
 : ${WPT_BRAVE:='y'}
 : ${WPT_EDGE:='y'}
+: ${WPT_EPIPHANY:='y'}
 : ${WPT_OPERA:='n'}
 : ${WPT_VIVALDI:='n'}
 : ${LINUX_DISTRO:=`(lsb_release -is)`}
@@ -363,6 +364,17 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
                 sleep 1
             done
             until sudo apt -yq install microsoft-edge-dev
+            do
+                sleep 1
+            done
+        fi
+
+        if [ "${WPT_EPIPHANY,,}" == 'y' ]; then
+            until sudo apt -y update
+            do
+                sleep 1
+            done
+            until sudo apt -yq install epiphany-browser
             do
                 sleep 1
             done
