@@ -374,10 +374,11 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
             do
                 sleep 1
             done
-            until sudo apt -yq install epiphany-browser
+            until sudo apt -yq install epiphany-browser icewm
             do
                 sleep 1
             done
+            sudo apt -yq remove gnome-shell
         fi
 
         if [ "${WPT_OPERA,,}" == 'y' ]; then
