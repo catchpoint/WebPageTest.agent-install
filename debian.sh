@@ -637,6 +637,7 @@ chmod +x ~/agent.sh
 
 # Overwrite the existing user crontab
 echo "@reboot ${PWD}/startup.sh" | crontab -
+sudo apt -yq autoremove
 
 echo
 echo "Install is complete.  Please reboot the system to start testing (sudo reboot)"
