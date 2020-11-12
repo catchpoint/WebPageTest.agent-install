@@ -122,8 +122,8 @@ curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 
 # Agent dependencies
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-until sudo apt -y install python python3 python3-pip python3-ujson python3-xlib python3-ewmh \
-        imagemagick ffmpeg dbus-x11 traceroute software-properties-common psmisc libnss3-tools iproute2 net-tools \
+until sudo apt -y install python python3 python3-pip python3-ujson \
+        imagemagick dbus-x11 traceroute software-properties-common psmisc libnss3-tools iproute2 net-tools \
         libtiff5-dev libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python3-tk \
         python3-dev libavutil-dev libmp3lame-dev libx264-dev yasm autoconf automake build-essential libass-dev libfreetype6-dev libtheora-dev \
         libtool libvorbis-dev pkg-config texi2html libtext-unidecode-perl python3-numpy python3-scipy \
@@ -292,7 +292,7 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
         fi
 
         if [ "${WPT_FIREFOX,,}" == 'y' ]; then
-            until sudo apt -y install firefox-esr
+            until sudo apt -y install firefox-esr firefox-geckodriver
             do
                 sleep 1
             done
@@ -640,7 +640,6 @@ echo "@reboot ${PWD}/startup.sh" | crontab -
 # Allow X to be started within the screen session
 sudo sed -i 's/allowed_users=console/allowed_users=anybody/g' /etc/X11/Xwrapper.config
 sudo systemctl set-default multi-user
-sudo apt -yq autoremove
 
 echo
 echo "Install is complete.  Please reboot the system to start testing (sudo reboot)"
