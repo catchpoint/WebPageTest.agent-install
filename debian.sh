@@ -36,7 +36,7 @@ set -eu
 : ${WPT_FIREFOX:='y'}
 : ${WPT_BRAVE:='y'}
 : ${WPT_EDGE:='y'}
-: ${WPT_EPIPHANY:='n'}
+: ${WPT_EPIPHANY:='y'}
 : ${WPT_OPERA:='n'}
 : ${WPT_VIVALDI:='n'}
 : ${LINUX_DISTRO:=`(lsb_release -is)`}

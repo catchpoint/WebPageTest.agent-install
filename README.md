@@ -29,9 +29,9 @@ Browsers:
 * **WPT_FIREFOX** - "y" (default) or "n" : Install Mozilla Firefox (Stable, ESR and Nightly)
 * **WPT_EDGE** - "y" (default) or "n" : Install Microsoft Edge (Dev)
 * **WPT_BRAVE** - "y" (default) or "n" : Install The Brave Browser (stable, beta and dev channels)
+* **WPT_EPIPHANY** - "y" (default) or "n" : Install Epiphany for WebKit testing (Requires Ubunto 20.04+)
 * **WPT_OPERA** - "y" or "n" (default) : Install Opera (stable, beta and dev channels)
 * **WPT_VIVALDI** - "y" or "n" (default) : Install Vivaldi
-* **WPT_EPIPHANY** - "y" or "n" (default) : Install Epiphany for WebKit testing (Requires Ubunto 20.04+)
 
 For convenience, the github url is also available shortened as http://tiny.cc/wptagent
 ```bash
