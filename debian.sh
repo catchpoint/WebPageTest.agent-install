@@ -91,11 +91,6 @@ if [ "${WPT_UPDATE_OS_NOW,,}" == 'y' ]; then
     done
 fi
 
-# Pin the kernel for Raspbian so it doesn't accidentally update to a broken kernel (has happened before)
-if [ "${LINUX_DISTRO}" == 'Raspbian' ]; then
-    sudo apt-mark hold raspberrypi-bootloader raspberrypi-kernel
-fi
-
 #**************************************************************************************************
 # Agent code
 #**************************************************************************************************
