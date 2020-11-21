@@ -40,6 +40,7 @@ set -eu
 : ${WPT_OPERA:='n'}
 : ${WPT_VIVALDI:='n'}
 : ${LINUX_DISTRO:=`(lsb_release -is)`}
+: ${WPT_DEVICE_NAME:='Device'}
 
 #**************************************************************************************************
 # Prompt for options
@@ -84,6 +85,12 @@ do
     sleep 1
 done
 
+# system config
+until sudo apt -y install git screen watchdog curl wget apt-transport-https xserver-xorg-video-dummy gnupg2
+do
+    sleep 1
+done
+
 if [ "${WPT_UPDATE_OS_NOW,,}" == 'y' ]; then
     until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
     do
@@ -105,12 +112,6 @@ done
 #**************************************************************************************************
 # OS Packages
 #**************************************************************************************************
-
-# system config
-until sudo apt -y install git screen watchdog curl wget apt-transport-https xserver-xorg-video-dummy gnupg2
-do
-    sleep 1
-done
 
 # Node JS
 curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
@@ -595,11 +596,11 @@ fi
 
 # Agent invocation (depending on config)
 if [ "${AGENT_MODE,,}" == 'android' ]; then
-    echo "    python3 wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
-    echo "#    python3 wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --vpntether eth0,192.168.0.1 --shaper netem,eth0 --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+    echo "    python3 wptagent.py -vvvv $WPT_DEVICE_NAME --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+    echo "#    python3 wptagent.py -vvvv $WPT_DEVICE_NAME --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --vpntether eth0,192.168.0.1 --shaper netem,eth0 --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 fi
 if [ "${AGENT_MODE,,}" == 'ios' ]; then
-    echo "    python3 wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --iOS --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+    echo "    python3 wptagent.py -vvvv $WPT_DEVICE_NAME --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --iOS --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 fi
 if [ "${AGENT_MODE,,}" == 'desktop' ]; then
     if [ "${WPT_CLOUD,,}" == 'gce' ]; then
