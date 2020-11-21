@@ -76,9 +76,6 @@ sudo date
 # Make sure sudo doesn't prompt for a password
 echo "${USER} ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/wptagent"
 
-# Disable the built-in automatic updates
-sudo apt -y remove unattended-upgrades
-
 cd ~
 until sudo apt -y update
 do
@@ -409,6 +406,9 @@ fi
 #**************************************************************************************************
 # OS Config
 #**************************************************************************************************
+
+# Disable the built-in automatic updates
+sudo apt -y remove unattended-upgrades
 
 # Clean-up apt
 sudo apt -y autoremove
