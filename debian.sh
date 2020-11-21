@@ -137,7 +137,7 @@ if [ "${LINUX_DISTRO}" == 'Raspbian' ]; then
     cd ~
     git clone --depth 1 https://github.com/FFmpeg/FFmpeg.git ffmpeg
     cd ffmpeg
-    ./configure --arch=armel --target-os=linux --enable-gpl --enable-libx264 --enable-nonfree
+    ./configure --extra-ldflags="-latomic" --arch=armel --target-os=linux --enable-gpl --enable-libx264 --enable-nonfree
     make -j4
     sudo make install
     cd ~
