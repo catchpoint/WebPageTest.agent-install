@@ -638,7 +638,7 @@ chmod +x ~/agent.sh
 echo "@reboot ${PWD}/startup.sh" | crontab -
 
 # Allow X to be started within the screen session
-sudo sed -i 's/allowed_users=console/allowed_users=anybody/g' /etc/X11/Xwrapper.config
+sudo sed -i 's/allowed_users=console/allowed_users=anybody/g' /etc/X11/Xwrapper.config || true
 sudo systemctl set-default multi-user
 
 echo
