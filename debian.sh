@@ -267,7 +267,7 @@ fi
 #**************************************************************************************************
 # Python Modules
 #**************************************************************************************************
-until sudo pip3 install dnspython monotonic pillow psutil requests tornado wsaccel brotli 'fonttools>=3.44.0,<4.0.0' selenium future usbmuxwrapper
+until sudo pip3 install dnspython monotonic pillow psutil requests tornado wsaccel brotli fonttools selenium future usbmuxwrapper
 do
     sleep 1
 done
