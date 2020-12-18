@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 #**************************************************************************************************
 # WebPageTest agent installation script for MacOS systems.
@@ -83,7 +83,7 @@ if [ $WPT_KEY != '' ]; then
   KEY_OPTION="--key $WPT_KEY"
 fi
 echo '#!/bin/zsh' > ~/agent.sh
-echo 'cd ~' >> ~/agent.sh
+echo 'cd $HOME' >> ~/agent.sh
 
 # Wait for networking to become available and update the package list
 echo 'sleep 10' >> ~/agent.sh
@@ -107,13 +107,13 @@ fi
 
 # Agent invocation (depending on config)
 if [ "${AGENT_MODE,,}" == 'android' ]; then
-    echo "    python3 ~/wptagent/wptagent.py -vvvv --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+    echo "    python3 $HOME/wptagent/wptagent.py -vvvv --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 fi
 if [ "${AGENT_MODE,,}" == 'ios' ]; then
-    echo "    python3 ~/wptagent/wptagent.py -vvvv --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --iOS --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+    echo "    python3 $HOME/wptagent/wptagent.py -vvvv --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --iOS --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 fi
 if [ "${AGENT_MODE,,}" == 'desktop' ]; then
-    echo "    python3 ~/wptagent/wptagent.py -vvvv --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
+    echo "    python3 $HOME/wptagent/wptagent.py -vvvv --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 fi
 
 echo '    echo "Exited, restarting"' >> ~/agent.sh
@@ -121,6 +121,24 @@ echo '    sleep 10' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
+
+#**************************************************************************************************
+# Startup Script
+#**************************************************************************************************
+echo '<?xml version="1.0" encoding="UTF-8"?>' > ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '<plist version="1.0">' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '<dict>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    <key>Label</key>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    <string>org.webpagetest.wptagent</string>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    <key>ProgramArguments</key>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    <array>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo "        <string>$HOME/agent.sh</string>" >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    </array>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    <key>RunAtLoad</key>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    <true/>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '</dict>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '</plist>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
 
 #**************************************************************************************************
 # Done
