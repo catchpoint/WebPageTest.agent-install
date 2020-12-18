@@ -39,7 +39,7 @@ sudo date
 # System Update
 #**************************************************************************************************
 
-if [ "${WPT_UPDATE_OS_NOW,,}" == 'y' ]; then
+if [ $WPT_UPDATE_OS_NOW == 'y' ]; then
 softwareupdate --install --recommended
 fi
 
@@ -89,30 +89,30 @@ echo 'cd $HOME' >> ~/agent.sh
 echo 'sleep 10' >> ~/agent.sh
 
 # OS Update
-if [ "${WPT_UPDATE_OS,,}" == 'y' ]; then
+if [ $WPT_UPDATE_OS == 'y' ]; then
     echo 'echo "Updating OS"' >> ~/agent.sh
     echo 'sudo softwareupdate --install --recommended --restart' >> ~/agent.sh
 
 # Lighthouse Update
-if [ "${WPT_UPDATE_AGENT,,}" == 'y' ]; then
+if [ $WPT_UPDATE_AGENT == 'y' ]; then
     echo 'sudo npm i -g lighthouse' >> ~/agent.sh
 fi
 
 echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 
-if [ "${WPT_UPDATE_AGENT,,}" == 'y' ]; then
+if [ $WPT_UPDATE_AGENT == 'y' ]; then
     echo '    git pull origin release' >> ~/agent.sh
 fi
 
 # Agent invocation (depending on config)
-if [ "${AGENT_MODE,,}" == 'android' ]; then
+if [ $AGENT_MODE == 'android' ]; then
     echo "    python3 $HOME/wptagent/wptagent.py -vvvv --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 fi
-if [ "${AGENT_MODE,,}" == 'ios' ]; then
+if [ $AGENT_MODE == 'ios' ]; then
     echo "    python3 $HOME/wptagent/wptagent.py -vvvv --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --iOS --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 fi
-if [ "${AGENT_MODE,,}" == 'desktop' ]; then
+if [ $AGENT_MODE == 'desktop' ]; then
     echo "    python3 $HOME/wptagent/wptagent.py -vvvv --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --exit 60 --alive /tmp/wptagent" >> ~/agent.sh
 fi
 
