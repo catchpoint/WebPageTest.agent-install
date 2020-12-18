@@ -47,7 +47,7 @@ set -eu
 #**************************************************************************************************
 
 # Prompt for the configuration options
-echo "Automatic agent install and configuration."
+echo "Installing and configuring WebPageTest agent..."
 echo
 
 while [[ $DISABLE_IPV6 == '' ]]

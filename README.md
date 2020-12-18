@@ -75,3 +75,17 @@ Warning: This takes a LONG time (several hours).  For multiple devices it is gen
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
 ```
+
+## MacOS (in-progress)
+Tested on MacOS 11 (x86 and ARM)
+
+* Install Xcode manually from the app store
+* Install Network Link Conditioner ([additional download](https://swiftmania.io/network-link-conditioner/#simulator))
+* Install the browsers to be used for testing
+* Then install agent:
+```bash
+bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/macos.sh)
+```
+* Grant the agent utilities the necessary permissions in the system privacy settings:
+  * "Screen Recording" - Add the terminal app that is used to run the agent (i.e. iTerm or Terminal)
+  * "Accessibility" - Add both scripts in <wptagent>/internal/support/osx
