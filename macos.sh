@@ -128,6 +128,7 @@ chmod +x ~/agent.sh
 #**************************************************************************************************
 # Startup Script
 #**************************************************************************************************
+mkdir -p ~/Library/LaunchAgents;
 echo '<?xml version="1.0" encoding="UTF-8"?>' > ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
 echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
 echo '<plist version="1.0">' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
