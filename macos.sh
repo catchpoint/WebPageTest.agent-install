@@ -19,6 +19,10 @@ set -eu
 : ${WPT_UPDATE_OS_NOW:='y'}
 : ${WPT_UPDATE_AGENT:='y'}
 
+# Pre-prompt for the sudo authorization so it doesn't prompt later
+echo "May prompt for sudo password..."
+sudo date
+
 while [[ $WPT_SERVER == '' ]]
 do
 read -p "WebPageTest server (i.e. www.webpagetest.org): " WPT_SERVER
@@ -31,9 +35,6 @@ while [[ $WPT_KEY == '' ]]
 do
 read -p "Location Key (if required): " WPT_KEY
 done
-
-# Pre-prompt for the sudo authorization so it doesn't prompt later
-sudo date
 
 #**************************************************************************************************
 # System Update
