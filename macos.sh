@@ -88,11 +88,6 @@ echo 'cd $HOME' >> ~/agent.sh
 # Wait for networking to become available and update the package list
 echo 'sleep 10' >> ~/agent.sh
 
-# OS Update
-if [ $WPT_UPDATE_OS == 'y' ]; then
-    echo 'echo "Updating OS"' >> ~/agent.sh
-    echo 'sudo softwareupdate --install --recommended --restart' >> ~/agent.sh
-
 # Lighthouse Update
 if [ $WPT_UPDATE_AGENT == 'y' ]; then
     echo 'sudo npm i -g lighthouse' >> ~/agent.sh
@@ -119,6 +114,13 @@ fi
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 10' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
+
+# OS Update
+if [ $WPT_UPDATE_OS == 'y' ]; then
+    echo 'echo "Updating OS"' >> ~/agent.sh
+    echo 'sudo softwareupdate --install --recommended --restart' >> ~/agent.sh
+fi
+
 echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
 
