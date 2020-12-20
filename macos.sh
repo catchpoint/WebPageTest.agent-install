@@ -62,7 +62,7 @@ done
 echo "${USER} ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee "/etc/sudoers.d/wptagent"
 
 # Install homebrew
-arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+CI=1 arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Install the cli libraries
 arch -x86_64 brew install libvpx ffmpeg imagemagick geckodriver ios-webkit-debug-proxy node git
