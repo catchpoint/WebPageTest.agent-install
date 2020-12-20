@@ -98,7 +98,9 @@ echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 
 if [ $WPT_UPDATE_AGENT == 'y' ]; then
+    echo "    cd $HOME/wptagent" >> ~/agent.sh
     echo '    git pull origin release' >> ~/agent.sh
+    echo "    cd $HOME" >> ~/agent.sh
 fi
 
 # Agent invocation (depending on config)
@@ -126,7 +128,12 @@ echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
 
 #**************************************************************************************************
+# Permission prompts
+#**************************************************************************************************
+python3 ~/wptagent/scripts/macos_prompts.py
+
+#**************************************************************************************************
 # Done
 #**************************************************************************************************
 
-echo "Done. Permissions will need to be added manually and agent.sh will need to be configured to start automatically at login (see install docs)"
+echo "Done. agent.sh will need to be configured to start automatically at login (see install docs)"
