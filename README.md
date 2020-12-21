@@ -87,5 +87,8 @@ Tested on MacOS 11 (x86 and ARM)
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/macos.sh)
 ```
-* The install script should install all of the browsers and prompt for the necessary system permissions. It should also automatically create startup applications that automatically start the agent after a reboot.
+* The install script should install all of the browsers and prompt for the necessary system permissions.
+* Configure the agent and watchdog to start automatically at startup.
+  * System Preferences->Users and Groups->Login Items
+  * Add ~/wptagent-install/macos/Agent and Watchdog
 * Reboot

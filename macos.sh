@@ -144,38 +144,6 @@ chmod +x ~/agent.sh
 cd ~
 git clone https://github.com/WPO-Foundation/wptagent-install.git
 
-# create the launch item to run the terminal automator script
-mkdir -p ~/Library/LaunchAgents;
-echo '<?xml version="1.0" encoding="UTF-8"?>' > ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-echo '<plist version="1.0">' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-echo '<dict>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-echo '    <key>Label</key>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-echo '    <string>org.webpagetest.wptagent</string>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-echo '    <key>ProgramArguments</key>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-echo '    <array>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-echo "        <string>$HOME/wptagent-install/macos/Agent.app</string>" >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-echo '    </array>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-echo '    <key>RunAtLoad</key>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-echo '    <true/>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-echo '</dict>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-echo '</plist>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
-
-echo '<?xml version="1.0" encoding="UTF-8"?>' > ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-echo '<plist version="1.0">' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-echo '<dict>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-echo '    <key>Label</key>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-echo '    <string>org.webpagetest.watchdog</string>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-echo '    <key>ProgramArguments</key>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-echo '    <array>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-echo "        <string>$HOME/wptagent-install/macos/Watchdog.app</string>" >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-echo '    </array>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-echo '    <key>RunAtLoad</key>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-echo '    <true/>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-echo '</dict>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-echo '</plist>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
-
 #**************************************************************************************************
 # Permission prompts
 #**************************************************************************************************
@@ -197,4 +165,6 @@ killall Python
 # Done
 #**************************************************************************************************
 
-echo "Done. agent.sh will need to be configured to start automatically at login (see install docs)"
+echo "Please configure ~/wptagent-install/macos/Agent.app and Watchdog.app to start automatically as login items."
+echo "This is done in System Preferences->Users and Groups->Login Items."
+echo "Then reboot"
