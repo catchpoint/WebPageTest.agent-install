@@ -128,9 +128,55 @@ echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
 
 #**************************************************************************************************
+# Startup and watchdog scripts
+#**************************************************************************************************
+cd ~
+git clone https://github.com/WPO-Foundation/wptagent-install.git
+
+# create the launch item to run the terminal automator script
+mkdir -p ~/Library/LaunchAgents;
+echo '<?xml version="1.0" encoding="UTF-8"?>' > ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '<plist version="1.0">' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '<dict>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    <key>Label</key>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    <string>org.webpagetest.wptagent</string>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    <key>ProgramArguments</key>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    <array>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo "        <string>$HOME/wptagent-install/macos/Agent.app</string>" >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    </array>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    <key>RunAtLoad</key>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '    <true/>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '</dict>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+echo '</plist>' >> ~/Library/LaunchAgents/org.webpagetest.wptagent.plist
+
+echo '<?xml version="1.0" encoding="UTF-8"?>' > ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+echo '<plist version="1.0">' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+echo '<dict>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+echo '    <key>Label</key>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+echo '    <string>org.webpagetest.watchdog</string>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+echo '    <key>ProgramArguments</key>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+echo '    <array>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+echo "        <string>$HOME/wptagent-install/macos/Watchdog.app</string>" >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+echo '    </array>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+echo '    <key>RunAtLoad</key>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+echo '    <true/>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+echo '</dict>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+echo '</plist>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
+
+#**************************************************************************************************
 # Permission prompts
 #**************************************************************************************************
+echo "The install script is now going to trigger the permissions prompts for the various permissions needed by the agent."
+echo "This includes Automation permissions for the scripts to move the simulator window and screen capture permissions to capture video."
+echo "Press enter to continue."
+read
 python3 ~/wptagent/scripts/macos_prompts.py
+
+open ~/wptagent-install/macos/Watchdog.app
+open ~/wptagent-install/macos/Agent.app
+killall Python
 
 #**************************************************************************************************
 # Done
