@@ -3,7 +3,7 @@
 #**************************************************************************************************
 # WebPageTest agent installation script for MacOS systems.
 
-echo "Installing and configuring WebPageTest agent..."
+echo "Installing and configuring WebPageTest agent. Please make sure that Xcode is installed before running..."
 echo
 
 #**************************************************************************************************
@@ -75,6 +75,14 @@ pip3 install PyObjC ujson dnspython monotonic pillow psutil requests tornado wsa
 npm -g install lighthouse
 
 #**************************************************************************************************
+# Install Browsers
+#**************************************************************************************************
+echo "Installing Browsers..."
+cd ~
+git clone https://github.com/WPO-Foundation/browser-install.git
+python3 ~/browser-install/browser_install_macos.py
+
+#**************************************************************************************************
 # Agent Script
 #**************************************************************************************************
 
@@ -88,6 +96,9 @@ echo 'cd $HOME' >> ~/agent.sh
 
 # Wait for networking to become available and update the package list
 echo 'sleep 10' >> ~/agent.sh
+
+# Update the browsers
+echo "python3 $HOME/browser-install/browser_install_macos.py" >> ~/agent.sh
 
 # Lighthouse Update
 if [ $WPT_UPDATE_AGENT == 'y' ]; then
