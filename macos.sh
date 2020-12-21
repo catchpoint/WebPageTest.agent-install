@@ -188,6 +188,7 @@ echo "Triggering permissions prompts."
 echo "you will likely need to grant the permissions under 'Screen Capture' and 'Accessibility' under privacy manually."
 python3 ~/wptagent/scripts/macos_prompts.py
 
+touch /tmp/wptagent
 open ~/wptagent-install/macos/Watchdog.app
 open ~/wptagent-install/macos/Agent.app
 killall Python
