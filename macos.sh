@@ -181,8 +181,11 @@ echo '</plist>' >> ~/Library/LaunchAgents/org.webpagetest.watchdog.plist
 #**************************************************************************************************
 echo "The install script is now going to trigger the permissions prompts for the various permissions needed by the agent."
 echo "This includes Automation permissions for the scripts to move the simulator window and screen capture permissions to capture video."
-echo "Press enter to continue."
+echo
+echo "******  Press enter to continue ******"
 read
+echo "Triggering permissions prompts."
+echo "you will likely need to grant the permissions under 'Screen Capture' and 'Accessibility' under privacy manually."
 python3 ~/wptagent/scripts/macos_prompts.py
 
 open ~/wptagent-install/macos/Watchdog.app
