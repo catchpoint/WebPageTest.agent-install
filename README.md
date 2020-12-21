@@ -66,7 +66,7 @@ bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install
 ```
 
 ## Raspberry Pi (Raspbian Stretch+):
-Still a work in progress and requires editing ~/agent.sh after install to configure tethering and traffic shaping.
+Requires editing ~/agent.sh after install to configure tethering and traffic shaping.
 
 Desktop testing works best with Raspbian Buster or later.
 
@@ -79,13 +79,13 @@ bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install
 ## MacOS (in-progress)
 Tested on MacOS 11 (x86 and ARM)
 
-* Install Xcode manually from the app store
+* Configure MacOS to log in automatically (System Preferences->Users and Groups->Login Options)
+* Turn off the screen saver and configure power management to never put the display to sleep
+* Install Xcode manually from the app store. Launch it and accept the license.
 * Install Network Link Conditioner ([additional download](https://swiftmania.io/network-link-conditioner/#simulator))
-* Install the browsers to be used for testing
-* Then install agent:
+* Run the agent install script from a Terminal shell:
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/macos.sh)
 ```
-* Grant the agent utilities the necessary permissions in the system privacy settings:
-  * "Screen Recording" - Add the terminal app that is used to run the agent (i.e. iTerm or Terminal)
-  * "Accessibility" - Add both scripts in <wptagent>/internal/support/osx
+* The install script should install all of the browsers and prompt for the necessary system permissions. It should also automatically create startup applications that automatically start the agent after a reboot.
+* Reboot
