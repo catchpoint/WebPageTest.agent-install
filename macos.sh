@@ -92,7 +92,7 @@ if [ $WPT_KEY != '' ]; then
   KEY_OPTION="--key $WPT_KEY"
 fi
 echo '#!/bin/zsh' > ~/agent.sh
-echo 'cd $HOME' >> ~/agent.sh
+echo "cd $HOME" >> ~/agent.sh
 
 # Wait for networking to become available and update the package list
 echo 'sleep 10' >> ~/agent.sh
@@ -101,7 +101,7 @@ echo 'sleep 10' >> ~/agent.sh
 echo "cd $HOME/browser-install" >> ~/agent.sh
 echo "git pull origin master" >> ~/agent.sh
 echo "python3 browser_install_macos.py" >> ~/agent.sh
-echo 'cd $HOME' >> ~/agent.sh
+echo "cd $HOME" >> ~/agent.sh
 
 # Lighthouse Update
 if [ $WPT_UPDATE_AGENT == 'y' ]; then
