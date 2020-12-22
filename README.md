@@ -82,7 +82,6 @@ Tested on MacOS 11 (x86 and ARM)
 * Configure MacOS to log in automatically (System Preferences->Users and Groups->Login Options)
 * Turn off the screen saver and configure power management to never put the display to sleep
 * Install Xcode manually from the app store. Launch it and accept the license.
-* Install Network Link Conditioner ([additional download](https://swiftmania.io/network-link-conditioner/#simulator))
 * Run the agent install script from a Terminal shell:
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/macos.sh)
