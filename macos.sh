@@ -158,8 +158,10 @@ python3 ~/wptagent/scripts/macos_prompts.py
 
 touch /tmp/wptagent
 open ~/wptagent-install/macos/Watchdog.app
+sleep 10
 open ~/wptagent-install/macos/Agent.app
-killall Python
+sleep 10
+killall Python || true
 
 #**************************************************************************************************
 # Done
