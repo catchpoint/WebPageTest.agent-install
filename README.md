@@ -76,7 +76,7 @@ Warning: This takes a LONG time (several hours).  For multiple devices it is gen
 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
 ```
 
-## MacOS (in-progress)
+## MacOS
 Tested on MacOS 11 (x86 and ARM)
 
 * Configure MacOS to log in automatically (System Preferences->Users and Groups->Login Options)
