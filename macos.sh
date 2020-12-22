@@ -98,7 +98,10 @@ echo 'cd $HOME' >> ~/agent.sh
 echo 'sleep 10' >> ~/agent.sh
 
 # Update the browsers
-echo "python3 $HOME/browser-install/browser_install_macos.py" >> ~/agent.sh
+echo "cd $HOME/browser-install" >> ~/agent.sh
+echo "git pull origin master" >> ~/agent.sh
+echo "python3 browser_install_macos.py" >> ~/agent.sh
+echo 'cd $HOME' >> ~/agent.sh
 
 # Lighthouse Update
 if [ $WPT_UPDATE_AGENT == 'y' ]; then
