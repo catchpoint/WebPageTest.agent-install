@@ -514,10 +514,6 @@ echo 'sleep 10' >> ~/agent.sh
 
 # Browser Certificates
 if [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
-    echo 'until sudo apt -y update' >> ~/agent.sh
-    echo 'do' >> ~/agent.sh
-    echo '    sleep 1' >> ~/agent.sh
-    echo 'done' >> ~/agent.sh
     if [ "${LINUX_DISTRO}" != 'Raspbian' ]; then
         echo 'echo "Updating browser certificates"' >> ~/agent.sh
         if [ "${WPT_CHROME,,}" == 'y' ]; then
@@ -563,6 +559,10 @@ if [ "${WPT_UPDATE_OS,,}" == 'y' ]; then
     echo '    sleep 1' >> ~/agent.sh
     echo 'done' >> ~/agent.sh
 elif [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
+    echo 'until sudo apt -y update' >> ~/agent.sh
+    echo 'do' >> ~/agent.sh
+    echo '    sleep 1' >> ~/agent.sh
+    echo 'done' >> ~/agent.sh
     if [ "${LINUX_DISTRO}" == 'Raspbian' ]; then
         echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq --only-upgrade install chromium-browser firefox-esr' >> ~/agent.sh
     else
@@ -619,6 +619,19 @@ fi
 echo '    echo "Exited, restarting"' >> ~/agent.sh
 echo '    sleep 10' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
+# OS Update (again, just before reboot)
+if [ "${WPT_UPDATE_OS,,}" == 'y' ]; then
+    echo 'until sudo apt -y update' >> ~/agent.sh
+    echo 'do' >> ~/agent.sh
+    echo '    sleep 1' >> ~/agent.sh
+    echo 'done' >> ~/agent.sh
+    echo 'echo "Updating OS"' >> ~/agent.sh
+    echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade' >> ~/agent.sh
+    echo 'do' >> ~/agent.sh
+    echo '    sudo apt -f install' >> ~/agent.sh
+    echo '    sleep 1' >> ~/agent.sh
+    echo 'done' >> ~/agent.sh
+fi
 echo 'sudo apt -y autoremove' >> ~/agent.sh
 echo 'sudo apt clean' >> ~/agent.sh
 if [ "${AGENT_MODE,,}" == 'android' ]; then
