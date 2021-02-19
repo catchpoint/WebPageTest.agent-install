@@ -41,6 +41,7 @@ set -eu
 : ${WPT_VIVALDI:='n'}
 : ${LINUX_DISTRO:=`(lsb_release -is)`}
 : ${WPT_DEVICE_NAME:='Device'}
+: ${WPT_BRANCH:='release'}
 
 #**************************************************************************************************
 # Prompt for options
@@ -101,7 +102,7 @@ fi
 
 cd ~
 rm -rf wptagent
-until git clone --depth 1 --branch=release https://github.com/WPO-Foundation/wptagent.git
+until git clone --depth 1 --branch=$WPT_BRANCH https://github.com/WPO-Foundation/wptagent.git
 do
     sleep 1
 done
@@ -595,7 +596,7 @@ echo 'for i in `seq 1 24`' >> ~/agent.sh
 echo 'do' >> ~/agent.sh
 
 if [ "${WPT_UPDATE_AGENT,,}" == 'y' ]; then
-    echo '    git pull origin release' >> ~/agent.sh
+    echo "    git pull origin $WPT_BRANCH" >> ~/agent.sh
 fi
 
 # Agent invocation (depending on config)

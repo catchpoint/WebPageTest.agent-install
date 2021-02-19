@@ -17,6 +17,7 @@ Agent:
 * **WPT_CLOUD** - blank (default) for no cloud. "ec2" or "gce" to get config dynamically from user data in Google or Amazon cloud.
 * **AGENT_MODE** - "desktop" (default), "ios" or "android".
 * **WPT_UPDATE_AGENT** - "y" (default) or "n" : automatically update the agent from GitHub's release branch hourly and Lighthouse daily.
+* **WPT_BRANCH** - "release" (default) : specify Github branch to sync
 
 OS:
 * **DISABLE_IPV6** - "y" or "n" (default) : disable IPv6 networking (recommended for systems without IPv6 connectivity).
