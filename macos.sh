@@ -133,10 +133,10 @@ echo '    sleep 10' >> ~/agent.sh
 echo 'done' >> ~/agent.sh
 
 # OS Update
-if [ $WPT_UPDATE_OS == 'y' ]; then
-    echo 'echo "Updating OS"' >> ~/agent.sh
-    echo 'sudo softwareupdate --install --recommended --restart' >> ~/agent.sh
-fi
+#if [ $WPT_UPDATE_OS == 'y' ]; then
+#    echo 'echo "Updating OS"' >> ~/agent.sh
+#    echo 'sudo softwareupdate --install --recommended --restart' >> ~/agent.sh
+#fi
 
 echo 'sudo reboot' >> ~/agent.sh
 chmod +x ~/agent.sh
