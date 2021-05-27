@@ -34,6 +34,9 @@ Browsers:
 * **WPT_OPERA** - "y" or "n" (default) : Install Opera (stable, beta and dev channels)
 * **WPT_VIVALDI** - "y" or "n" (default) : Install Vivaldi
 
+Misc:
+* **WPT_INTERACTIVE** = "y" or "n" (default) : Install in a shared OS environment. "y" will expect to take over the whole machine, configure watchdog, cron, etc. "n" can be used for development installs (and will default to the master branch).
+
 For convenience, the github url is also available shortened as http://tiny.cc/wptagent
 ```bash
 WPT_SERVER="webpagetest.mycompany.com" WPT_LOCATION="Dulles" WPT_KEY="xxxSomeSecretKeyxxx" DISABLE_IPV6=y WPT_OPERA=y WPT_VIVALDI=y bash <(curl -sL http://tiny.cc/wptagent)
@@ -93,3 +96,10 @@ bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install
   * System Preferences->Users and Groups->Login Items
   * Add ~/wptagent-install/macos/Agent and Watchdog
 * Reboot
+
+## Dev Setup on Ubuntu Desktop (18.04 LTS recommended)
+Will not configure X, watchdog, cron or a startup script.  There will be a master branch checkout in ~/wptagent/ and a script to run the agent at ~/agent.sh
+
+```bash
+WPT_INTERACTIVE="y" bash <(curl -sL http://tiny.cc/wptagent)
+```

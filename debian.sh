@@ -41,7 +41,12 @@ set -eu
 : ${WPT_VIVALDI:='n'}
 : ${LINUX_DISTRO:=`(lsb_release -is)`}
 : ${WPT_DEVICE_NAME:='Device'}
-: ${WPT_BRANCH:='release'}
+: ${WPT_INTERACTIVE:='n'}
+if [ "${WPT_INTERACTIVE,,}" == 'y' ]; then
+    : ${WPT_BRANCH:='master'}
+else
+    : ${WPT_BRANCH:='release'}
+fi
 
 #**************************************************************************************************
 # Prompt for options
@@ -51,10 +56,12 @@ set -eu
 echo "Installing and configuring WebPageTest agent..."
 echo
 
-while [[ $DISABLE_IPV6 == '' ]]
-do
-  read -e -p "Disable IPv6 (recommended unless IPv6 connectivity is available) (Y/n): " -i "y" DISABLE_IPV6
-done
+if [ "${WPT_INTERACTIVE,,}" == 'n' ]; then
+    while [[ $DISABLE_IPV6 == '' ]]
+    do
+        read -e -p "Disable IPv6 (recommended unless IPv6 connectivity is available) (Y/n): " -i "y" DISABLE_IPV6
+    done
+fi
 
 if [ "${WPT_CLOUD,,}" != 'gce' ] && [ "${WPT_CLOUD,,}" != 'ec2' ]; then
     while [[ $WPT_SERVER == '' ]]
@@ -84,10 +91,17 @@ do
 done
 
 # system config
-until sudo apt -y install git screen watchdog curl wget apt-transport-https xserver-xorg-video-dummy gnupg2
-do
-    sleep 1
-done
+if [ "${WPT_INTERACTIVE,,}" == 'y' ]; then
+    until sudo apt -y install git curl wget apt-transport-https gnupg2
+    do
+        sleep 1
+    done
+else
+    until sudo apt -y install git screen watchdog curl wget apt-transport-https xserver-xorg-video-dummy gnupg2
+    do
+        sleep 1
+    done
+fi
 
 if [ "${WPT_UPDATE_OS_NOW,,}" == 'y' ]; then
     until sudo DEBIAN_FRONTEND=noninteractive apt -yq -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" dist-upgrade
@@ -102,10 +116,17 @@ fi
 
 cd ~
 rm -rf wptagent
-until git clone --depth 1 --branch=$WPT_BRANCH https://github.com/WPO-Foundation/wptagent.git
-do
-    sleep 1
-done
+if [ "${WPT_INTERACTIVE,,}" == 'y' ]; then
+    until git clone --branch=$WPT_BRANCH https://github.com/WPO-Foundation/wptagent.git
+    do
+        sleep 1
+    done
+else
+    until git clone --depth 1 --branch=$WPT_BRANCH https://github.com/WPO-Foundation/wptagent.git
+    do
+        sleep 1
+    done
+fi
 
 #**************************************************************************************************
 # OS Packages
@@ -409,6 +430,8 @@ fi
 #**************************************************************************************************
 
 # Disable the built-in automatic updates
+if [ "${WPT_INTERACTIVE,,}" == 'n' ]; then
+
 sudo apt -y remove unattended-upgrades
 
 # Clean-up apt
@@ -457,9 +480,12 @@ fi
 cd ~
 echo "test-binary = $PWD/wptagent/alive3.sh" | sudo tee -a /etc/watchdog.conf
 
+fi
+
 #**************************************************************************************************
 # Startup Script
 #**************************************************************************************************
+if [ "${WPT_INTERACTIVE,,}" == 'n' ]; then
 
 # build the startup script
 echo '#!/bin/sh' > ~/startup.sh
@@ -474,9 +500,12 @@ echo 'fi' >> ~/startup.sh
 echo 'sudo service watchdog restart' >> ~/startup.sh
 chmod +x ~/startup.sh
 
+fi
+
 #**************************************************************************************************
 # First-run Script (reboot the first time after starting if ~/first.run file exists)
 #**************************************************************************************************
+if [ "${WPT_INTERACTIVE,,}" == 'n' ]; then
 
 # build the firstrun script
 echo '#!/bin/sh' > ~/firstrun.sh
@@ -493,6 +522,8 @@ echo 'rm ~/first.run' >> ~/firstrun.sh
 echo 'sudo reboot' >> ~/firstrun.sh
 chmod +x ~/firstrun.sh
 
+fi
+
 #**************************************************************************************************
 # Agent Script
 #**************************************************************************************************
@@ -507,6 +538,22 @@ if [ $WPT_DEVICE_NAME != '' ]; then
   NAME_OPTION="--name \"$WPT_DEVICE_NAME\""
 fi
 echo '#!/bin/sh' > ~/agent.sh
+
+if [ "${WPT_INTERACTIVE,,}" == 'y' ]; then
+
+# Agent invocation (depending on config)
+if [ "${AGENT_MODE,,}" == 'android' ]; then
+    echo "python3 ~/wptagent/wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --android" >> ~/agent.sh
+fi
+if [ "${AGENT_MODE,,}" == 'ios' ]; then
+    echo "python3 ~/wptagent/wptagent.py -vvvv $NAME_OPTION --location $WPT_LOCATION $KEY_OPTION --server \"http://$WPT_SERVER/work/\" --iOS" >> ~/agent.sh
+fi
+if [ "${AGENT_MODE,,}" == 'desktop' ]; then
+    echo "python3 ~/wptagent/wptagent.py -vvvv --server \"http://$WPT_SERVER/work/\" --location $WPT_LOCATION $KEY_OPTION" >> ~/agent.sh
+fi
+
+else
+
 echo 'export DEBIAN_FRONTEND=noninteractive' >> ~/agent.sh
 echo 'cd ~/wptagent' >> ~/agent.sh
 
@@ -642,11 +689,17 @@ if [ "${AGENT_MODE,,}" == 'ios' ]; then
     echo 'idevicediagnostics restart' >> ~/agent.sh
 fi
 echo 'sudo reboot' >> ~/agent.sh
+
+#end of non-interactive block
+fi
+
 chmod +x ~/agent.sh
 
 #**************************************************************************************************
 # Finish
 #**************************************************************************************************
+
+if [ "${WPT_INTERACTIVE,,}" == 'n' ]; then
 
 # Overwrite the existing user crontab
 echo "@reboot ${PWD}/startup.sh" | crontab -
@@ -654,6 +707,8 @@ echo "@reboot ${PWD}/startup.sh" | crontab -
 # Allow X to be started within the screen session
 sudo sed -i 's/allowed_users=console/allowed_users=anybody/g' /etc/X11/Xwrapper.config || true
 sudo systemctl set-default multi-user
+
+fi
 
 echo
 echo "Install is complete.  Please reboot the system to start testing (sudo reboot)"
