@@ -61,14 +61,6 @@ WPT_CLOUD=gce bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wp
 WPT_CLOUD=ec2 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
 ```
 
-## Google Cloud Shared Image
-This will create an instance template in the project that can be used to create Managed Instance Groups or individual instances in any region. The instances will be preemptable n1-standard-2.
-Open the cloud shell for the project where the agents will run and paste:
-
-```bash
-bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/gce_image.sh)
-```
-
 ## Raspberry Pi (Raspbian Stretch+):
 Requires editing ~/agent.sh after install to configure tethering and traffic shaping.
 
