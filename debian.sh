@@ -305,26 +305,6 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
                 sleep 1
             done
         fi
-
-        if [ "${WPT_FIREFOX,,}" == 'y' ]; then
-            until sudo apt -y install firefox-esr firefox-geckodriver
-            do
-                sleep 1
-            done
-        fi
-
-        if [ "${WPT_VIVALDI,,}" == 'y' ]; then
-            wget -qO- https://www.webpagetest.org/keys/vivaldi/linux_signing_key.pub | sudo apt-key add -
-            sudo add-apt-repository 'deb https://repo.vivaldi.com/archive/deb/ stable main' 
-            until sudo apt -y update
-            do
-                sleep 1
-            done
-            until sudo apt -yq install vivaldi-stable
-            do
-                sleep 1
-            done
-        fi
     else
         if [ "${WPT_CHROME,,}" == 'y' ]; then
             wget -q -O - https://www.webpagetest.org/keys/google/linux_signing_key.pub | sudo apt-key add -
