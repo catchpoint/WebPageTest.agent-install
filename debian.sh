@@ -470,6 +470,8 @@ if [ "${WPT_INTERACTIVE,,}" == 'n' ]; then
 # build the startup script
 echo '#!/bin/sh' > ~/startup.sh
 echo "PATH=$PWD/bin:$PWD/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin" >> ~/startup.sh
+echo 'sudo DEBIAN_FRONTEND=noninteractive apt update -yq' >> ~/startup.sh
+echo 'sudo DEBIAN_FRONTEND=noninteractive apt install ca-certificates -yq' >> ~/startup.sh
 echo 'cd ~' >> ~/startup.sh
 echo 'if [ -e first.run ]' >> ~/startup.sh
 echo 'then' >> ~/startup.sh
@@ -491,6 +493,10 @@ if [ "${WPT_INTERACTIVE,,}" == 'n' ]; then
 echo '#!/bin/sh' > ~/firstrun.sh
 echo 'cd ~' >> ~/firstrun.sh
 echo 'until sudo apt -y update' >> ~/firstrun.sh
+echo 'do' >> ~/firstrun.sh
+echo '    sleep 1' >> ~/firstrun.sh
+echo 'done' >> ~/firstrun.sh
+echo 'until sudo DEBIAN_FRONTEND=noninteractive apt install ca-certificates -yq' >> ~/firstrun.sh
 echo 'do' >> ~/firstrun.sh
 echo '    sleep 1' >> ~/firstrun.sh
 echo 'done' >> ~/firstrun.sh
