@@ -358,7 +358,7 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
             do
                 sleep 1
             done
-            until sudo apt -yq install microsoft-edge-dev microsoft-edge-beta
+            until sudo apt -yq install microsoft-edge-dev microsoft-edge-beta microsoft-edge-stable
             do
                 sleep 1
             done
