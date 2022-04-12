@@ -141,7 +141,7 @@ until sudo apt -y install python python3 python3-pip python3-ujson \
         imagemagick dbus-x11 traceroute software-properties-common psmisc libnss3-tools iproute2 net-tools openvpn \
         libtiff5-dev libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python3-tk \
         python3-dev libavutil-dev libmp3lame-dev libx264-dev yasm autoconf automake build-essential libass-dev libfreetype6-dev libtheora-dev \
-        libtool libvorbis-dev pkg-config texi2html libtext-unidecode-perl python3-numpy python3-scipy \
+        libtool libvorbis-dev pkg-config texi2html libtext-unidecode-perl python3-numpy python3-scipy perl \
         adb ethtool nodejs cmake git-core libsdl2-dev libva-dev libvdpau-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev texinfo wget \
         ttf-mscorefonts-installer fonts-noto fonts-roboto fonts-open-sans
 do
@@ -174,6 +174,15 @@ do
     sleep 1
 done
 sudo npm update -g
+
+#**************************************************************************************************
+# Exiftool (latest from source)
+#**************************************************************************************************
+git clone https://github.com/exiftool/exiftool.git ~/exiftool
+cd ~/exiftool
+perl Makefile.PL
+sudo make install
+cd ~
 
 #**************************************************************************************************
 # Android device support
