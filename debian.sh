@@ -147,6 +147,7 @@ until sudo apt -y install python python3 python3-pip python3-ujson \
 do
     sleep 1
 done
+sudo pip3 install --upgrade pip
 
 sudo dbus-uuidgen --ensure
 sudo fc-cache -f -v
