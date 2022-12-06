@@ -90,6 +90,9 @@ do
     sleep 1
 done
 
+# Disable the ubuntu 22.04 prompt for restarting services
+sudo echo "\$nrconf{restart} = 'a'" >> /etc/needrestart/needrestart.conf
+
 # system config
 if [ "${WPT_INTERACTIVE,,}" == 'y' ]; then
     until sudo apt -y install git curl wget apt-transport-https gnupg2
