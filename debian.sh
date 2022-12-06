@@ -91,7 +91,7 @@ do
 done
 
 # Disable the ubuntu 22.04 prompt for restarting services
-sudo echo "\$nrconf{restart} = 'a'" >> /etc/needrestart/needrestart.conf
+echo "\$nrconf{restart} = 'a'" | sudo tee -a "/etc/needrestart/needrestart.conf"
 
 # system config
 if [ "${WPT_INTERACTIVE,,}" == 'y' ]; then
