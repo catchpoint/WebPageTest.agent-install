@@ -351,8 +351,8 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
                 sleep 1
             done
             wget https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz
-            rm geckodriver-v0.32.0-linux64.tar.gz
             tar xvzf geckodriver-v0.32.0-linux64.tar.gz
+            rm geckodriver-v0.32.0-linux64.tar.gz
             sudo mv geckodriver /usr/bin
         fi
 
