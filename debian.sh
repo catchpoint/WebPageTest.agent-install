@@ -342,6 +342,10 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
         if [ "${WPT_FIREFOX,,}" == 'y' ]; then
             sudo add-apt-repository -y ppa:ubuntu-mozilla-daily/ppa
             sudo add-apt-repository -y ppa:mozillateam/ppa
+            echo 'Package: *' | sudo tee "/etc/apt/preferences.d/mozilla-firefox"
+            echo 'Pin: release o=LP-PPA-mozillateam' | sudo tee -a "/etc/apt/preferences.d/mozilla-firefox"
+            echo 'Pin-Priority: 1001' | sudo tee -a "/etc/apt/preferences.d/mozilla-firefox"
+            echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee "/etc/apt/apt.conf.d/51unattended-upgrades-firefox"
             until sudo apt -y update
             do
                 sleep 1
