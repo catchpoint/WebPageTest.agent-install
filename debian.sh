@@ -343,10 +343,14 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
             do
                 sleep 1
             done
-            until sudo apt -yq install firefox firefox-trunk firefox-esr firefox-geckodriver
+            until sudo apt -yq install firefox firefox-trunk firefox-esr
             do
                 sleep 1
             done
+            wget https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz
+            rm geckodriver-v0.32.0-linux64.tar.gz
+            tar xvzf geckodriver-v0.32.0-linux64.tar.gz
+            sudo mv geckodriver /usr/bin
         fi
 
         if [ "${WPT_BRAVE,,}" == 'y' ]; then
