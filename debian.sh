@@ -172,13 +172,6 @@ else
     done
 fi
 
-# ImageMagick
-#git clone https://github.com/SoftCreatR/imei
-#cd imei
-#chmod +x imei.sh
-#sudo ./imei.sh
-#cd ~
-
 # Lighthouse
 until sudo npm install -g lighthouse
 do
