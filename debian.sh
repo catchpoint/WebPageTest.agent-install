@@ -90,6 +90,9 @@ do
     sleep 1
 done
 
+# Disable the ubuntu 22.04 prompt for restarting services
+echo "\$nrconf{restart} = 'a'" | sudo tee -a "/etc/needrestart/needrestart.conf" ||:
+
 # system config
 if [ "${WPT_INTERACTIVE,,}" == 'y' ]; then
     until sudo apt -y install git curl wget apt-transport-https gnupg2
@@ -332,14 +335,22 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
         if [ "${WPT_FIREFOX,,}" == 'y' ]; then
             sudo add-apt-repository -y ppa:ubuntu-mozilla-daily/ppa
             sudo add-apt-repository -y ppa:mozillateam/ppa
+            echo 'Package: *' | sudo tee "/etc/apt/preferences.d/mozilla-firefox" ||:
+            echo 'Pin: release o=LP-PPA-mozillateam' | sudo tee -a "/etc/apt/preferences.d/mozilla-firefox" ||:
+            echo 'Pin-Priority: 1001' | sudo tee -a "/etc/apt/preferences.d/mozilla-firefox" ||:
+            echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee "/etc/apt/apt.conf.d/51unattended-upgrades-firefox" ||:
             until sudo apt -y update
             do
                 sleep 1
             done
-            until sudo apt -yq install firefox firefox-trunk firefox-esr firefox-geckodriver
+            until sudo apt -yq install firefox firefox-trunk firefox-esr
             do
                 sleep 1
             done
+            wget https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz
+            tar xvzf geckodriver-v0.32.0-linux64.tar.gz
+            rm geckodriver-v0.32.0-linux64.tar.gz
+            sudo mv geckodriver /usr/bin
         fi
 
         if [ "${WPT_BRAVE,,}" == 'y' ]; then

@@ -43,7 +43,7 @@ WPT_SERVER="webpagetest.mycompany.com" WPT_LOCATION="Dulles" WPT_KEY="xxxSomeSec
 ```
 
 ## Ubuntu 18.04+:
-Tested on 18.04 LTS and 20.04 LTS
+Tested on 18.04 LTS, 20.04 LTS, and 22.04 LTS
 
 ```bash
 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
@@ -89,7 +89,7 @@ bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install
   * Add ~/wptagent-install/macos/Agent and Watchdog
 * Reboot
 
-## Dev Setup on Ubuntu Desktop (18.04 LTS recommended)
+## Dev Setup on Ubuntu Desktop (22.04 LTS recommended)
 Will not configure X, watchdog, cron or a startup script.  There will be a master branch checkout in ~/wptagent/ and a script to run the agent at ~/agent.sh
 
 ```bash
