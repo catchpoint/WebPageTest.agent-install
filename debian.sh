@@ -139,6 +139,16 @@ fi
 curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 
 # Agent dependencies
+echo "deb http://deb.debian.org/debian bullseye contrib non-free
+deb-src http://deb.debian.org/debian bullseye contrib non-free
+
+deb http://deb.debian.org/debian-security/ bullseye-security contrib non-free
+deb-src http://deb.debian.org/debian-security/ bullseye-security contrib non-free
+
+deb http://deb.debian.org/debian bullseye-updates contrib non-free
+deb-src http://deb.debian.org/debian bullseye-updates contrib non-free
+" | sudo tee /etc/apt/sources.list.d/multiverse.list 
+
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
 until sudo apt -y install python3 python3-pip python3-ujson \
         imagemagick dbus-x11 traceroute software-properties-common psmisc libnss3-tools iproute2 net-tools openvpn \
