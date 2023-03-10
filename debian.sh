@@ -320,7 +320,7 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
         fi
     else
         if [ "${WPT_CHROME,,}" == 'y' ]; then
-            wget -q -O - https://www.webpagetest.org/keys/google/linux_signing_key.pub | sudo apt-key add -
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
             sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
             until sudo apt -y update
             do
@@ -373,7 +373,7 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
         fi
 
         if [ "${WPT_EDGE,,}" == 'y' ]; then
-            curl -s https://www.webpagetest.org/keys/microsoft/microsoft.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/microsoft.gpg add -
+            curl -s https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/microsoft.gpg add -
             echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" | sudo tee /etc/apt/sources.list.d/microsoft-edge-dev.list
             until sudo apt -y update
             do
@@ -572,7 +572,7 @@ if [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
     if [ "${LINUX_DISTRO}" != 'Raspbian' ]; then
         echo 'echo "Updating browser certificates"' >> ~/agent.sh
         if [ "${WPT_CHROME,,}" == 'y' ]; then
-            echo 'wget -q -O - https://www.webpagetest.org/keys/google/linux_signing_key.pub | sudo apt-key add -' >> ~/agent.sh
+            echo 'wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -' >> ~/agent.sh
         fi
 
         if [ "${WPT_FIREFOX,,}" == 'y' ]; then
@@ -588,7 +588,7 @@ if [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
         fi
 
         if [ "${WPT_EDGE,,}" == 'y' ]; then
-            echo 'curl -s https://www.webpagetest.org/keys/microsoft/microsoft.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/microsoft.gpg add -' >> ~/agent.sh
+            echo 'curl -s https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/microsoft.gpg add -' >> ~/agent.sh
         fi
 
         if [ "${WPT_OPERA,,}" == 'y' ]; then
