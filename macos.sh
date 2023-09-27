@@ -69,7 +69,7 @@ CI=1 arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/H
 arch -x86_64 brew install libvpx ffmpeg imagemagick geckodriver ios-webkit-debug-proxy node git
 
 # Install the python dependencies
-pip3 install PyObjC ujson dnspython monotonic pillow psutil requests tornado wsaccel brotli fonttools selenium future usbmuxwrapper
+pip3 install PyObjC ujson dnspython monotonic pillow psutil requests tornado wsaccel brotli fonttools selenium future usbmuxwrapper pytz tzlocal
 
 # Install lighthouse
 npm -g install lighthouse
