@@ -356,17 +356,11 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
         if [ "${WPT_BRAVE,,}" == 'y' ]; then
             curl -s https://www.webpagetest.org/keys/brave/release.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-release.gpg add -
             echo "deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
-            curl -s https://www.webpagetest.org/keys/brave/beta.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -
-            echo "deb [arch=amd64] https://brave-browser-apt-beta.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-beta.list
-            curl -s https://www.webpagetest.org/keys/brave/dev.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -
-            echo "deb [arch=amd64] https://brave-browser-apt-dev.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-dev.list
-            curl -s https://www.webpagetest.org/keys/brave/nightly.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -
-            echo "deb [arch=amd64] https://brave-browser-apt-nightly.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-nightly.list
             until sudo apt -y update
             do
                 sleep 1
             done
-            until sudo apt -yq install brave-browser brave-browser-beta brave-browser-dev brave-browser-nightly
+            until sudo apt -yq install brave-browser
             do
                 sleep 1
             done
@@ -582,9 +576,6 @@ if [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
 
         if [ "${WPT_BRAVE,,}" == 'y' ]; then
             echo 'curl -s https://www.webpagetest.org/keys/brave/release.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-release.gpg add -' >> ~/agent.sh
-            echo 'curl -s https://www.webpagetest.org/keys/brave/beta.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
-            echo 'curl -s https://www.webpagetest.org/keys/brave/dev.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
-            echo 'curl -s https://www.webpagetest.org/keys/brave/nightly.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
         fi
 
         if [ "${WPT_EDGE,,}" == 'y' ]; then
@@ -621,7 +612,7 @@ elif [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
     if [ "${LINUX_DISTRO}" == 'Raspbian' ]; then
         echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq --only-upgrade install chromium-browser firefox-esr' >> ~/agent.sh
     else
-        echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq --only-upgrade -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install google-chrome-stable google-chrome-beta google-chrome-unstable firefox firefox-trunk firefox-esr firefox-geckodriver brave-browser brave-browser-beta brave-browser-dev brave-browser-nightly opera-stable opera-beta opera-developer vivaldi-stable' >> ~/agent.sh
+        echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq --only-upgrade -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install google-chrome-stable google-chrome-beta google-chrome-unstable firefox firefox-trunk firefox-esr firefox-geckodriver brave-browser opera-stable opera-beta opera-developer vivaldi-stable' >> ~/agent.sh
     fi
     echo 'do' >> ~/agent.sh
     echo '    sleep 1' >> ~/agent.sh
