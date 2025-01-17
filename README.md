@@ -66,9 +66,9 @@ WPT_VIVALDI=y \
 bash <(curl -sL https://tiny.cc/wptagent)
 ```
 
-### Ubuntu 18.04+
+### Ubuntu 22.04+
  
-Tested on 18.04 LTS and 20.04 LTS.
+Tested on 20.04 LTS.
 
 ```sh
 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
@@ -114,7 +114,7 @@ Tested on MacOS 11 (x86 and ARM).
    2. Add `~/wptagent-install/macos/Agent` and Watchdog
 7. Reboot.
 
-### Dev Setup on Ubuntu Desktop (18.04 LTS recommended)
+### Dev Setup on Ubuntu Desktop (22.04 LTS recommended)
  
 Will not configure X, watchdog, cron, or a startup script. There will be a `master` branch checkout in `~/wptagent/` and a script to run the agent at `~/agent.sh`.
 

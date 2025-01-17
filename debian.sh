@@ -90,6 +90,9 @@ do
     sleep 1
 done
 
+# Disable the ubuntu 22.04 prompt for restarting services
+echo "\$nrconf{restart} = 'a'" | sudo tee -a "/etc/needrestart/needrestart.conf" ||:
+
 # system config
 if [ "${WPT_INTERACTIVE,,}" == 'y' ]; then
     until sudo apt -y install git curl wget apt-transport-https gnupg2
@@ -133,20 +136,21 @@ fi
 #**************************************************************************************************
 
 # Node JS
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 
 # Agent dependencies
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
-until sudo apt -y install python python3 python3-pip python3-ujson \
+until sudo apt -y install python3 python3-pip python3-ujson \
         imagemagick dbus-x11 traceroute software-properties-common psmisc libnss3-tools iproute2 net-tools openvpn \
         libtiff5-dev libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python3-tk \
         python3-dev libavutil-dev libmp3lame-dev libx264-dev yasm autoconf automake build-essential libass-dev libfreetype6-dev libtheora-dev \
-        libtool libvorbis-dev pkg-config texi2html libtext-unidecode-perl python3-numpy python3-scipy \
+        libtool libvorbis-dev pkg-config texi2html libtext-unidecode-perl python3-numpy python3-scipy perl \
         adb ethtool nodejs cmake git-core libsdl2-dev libva-dev libvdpau-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev texinfo wget \
         ttf-mscorefonts-installer fonts-noto fonts-roboto fonts-open-sans
 do
     sleep 1
 done
+sudo pip3 install --upgrade pip
 
 sudo dbus-uuidgen --ensure
 sudo fc-cache -f -v
@@ -174,6 +178,15 @@ do
     sleep 1
 done
 sudo npm update -g
+
+#**************************************************************************************************
+# Exiftool (latest from source)
+#**************************************************************************************************
+git clone https://github.com/exiftool/exiftool.git ~/exiftool
+cd ~/exiftool
+perl Makefile.PL
+sudo make install
+cd ~
 
 #**************************************************************************************************
 # Android device support
@@ -289,7 +302,7 @@ fi
 #**************************************************************************************************
 # Python Modules
 #**************************************************************************************************
-until sudo pip3 install dnspython monotonic pillow psutil requests tornado wsaccel brotli fonttools selenium future usbmuxwrapper
+until sudo pip3 install dnspython monotonic pillow psutil requests tornado wsaccel brotli fonttools selenium future usbmuxwrapper pytz tzlocal
 do
     sleep 1
 done
@@ -307,7 +320,7 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
         fi
     else
         if [ "${WPT_CHROME,,}" == 'y' ]; then
-            wget -q -O - https://www.webpagetest.org/keys/google/linux_signing_key.pub | sudo apt-key add -
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
             sudo sh -c 'echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
             until sudo apt -y update
             do
@@ -322,37 +335,39 @@ if [ "${AGENT_MODE,,}" == 'desktop' ]; then
         if [ "${WPT_FIREFOX,,}" == 'y' ]; then
             sudo add-apt-repository -y ppa:ubuntu-mozilla-daily/ppa
             sudo add-apt-repository -y ppa:mozillateam/ppa
+            echo 'Package: *' | sudo tee "/etc/apt/preferences.d/mozilla-firefox" ||:
+            echo 'Pin: release o=LP-PPA-mozillateam' | sudo tee -a "/etc/apt/preferences.d/mozilla-firefox" ||:
+            echo 'Pin-Priority: 1001' | sudo tee -a "/etc/apt/preferences.d/mozilla-firefox" ||:
+            echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' | sudo tee "/etc/apt/apt.conf.d/51unattended-upgrades-firefox" ||:
             until sudo apt -y update
             do
                 sleep 1
             done
-            until sudo apt -yq install firefox firefox-trunk firefox-esr firefox-geckodriver
+            until sudo apt -yq install firefox firefox-trunk firefox-esr
             do
                 sleep 1
             done
+            wget https://github.com/mozilla/geckodriver/releases/download/v0.32.0/geckodriver-v0.32.0-linux64.tar.gz
+            tar xvzf geckodriver-v0.32.0-linux64.tar.gz
+            rm geckodriver-v0.32.0-linux64.tar.gz
+            sudo mv geckodriver /usr/bin
         fi
 
         if [ "${WPT_BRAVE,,}" == 'y' ]; then
             curl -s https://www.webpagetest.org/keys/brave/release.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-release.gpg add -
             echo "deb [arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
-            curl -s https://www.webpagetest.org/keys/brave/beta.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -
-            echo "deb [arch=amd64] https://brave-browser-apt-beta.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-beta.list
-            curl -s https://www.webpagetest.org/keys/brave/dev.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -
-            echo "deb [arch=amd64] https://brave-browser-apt-dev.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-dev.list
-            curl -s https://www.webpagetest.org/keys/brave/nightly.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -
-            echo "deb [arch=amd64] https://brave-browser-apt-nightly.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-nightly.list
             until sudo apt -y update
             do
                 sleep 1
             done
-            until sudo apt -yq install brave-browser brave-browser-beta brave-browser-dev brave-browser-nightly
+            until sudo apt -yq install brave-browser
             do
                 sleep 1
             done
         fi
 
         if [ "${WPT_EDGE,,}" == 'y' ]; then
-            curl -s https://www.webpagetest.org/keys/microsoft/microsoft.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/microsoft.gpg add -
+            curl -s https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/microsoft.gpg add -
             echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" | sudo tee /etc/apt/sources.list.d/microsoft-edge-dev.list
             until sudo apt -y update
             do
@@ -551,7 +566,7 @@ if [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
     if [ "${LINUX_DISTRO}" != 'Raspbian' ]; then
         echo 'echo "Updating browser certificates"' >> ~/agent.sh
         if [ "${WPT_CHROME,,}" == 'y' ]; then
-            echo 'wget -q -O - https://www.webpagetest.org/keys/google/linux_signing_key.pub | sudo apt-key add -' >> ~/agent.sh
+            echo 'wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -' >> ~/agent.sh
         fi
 
         if [ "${WPT_FIREFOX,,}" == 'y' ]; then
@@ -561,13 +576,10 @@ if [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
 
         if [ "${WPT_BRAVE,,}" == 'y' ]; then
             echo 'curl -s https://www.webpagetest.org/keys/brave/release.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-release.gpg add -' >> ~/agent.sh
-            echo 'curl -s https://www.webpagetest.org/keys/brave/beta.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
-            echo 'curl -s https://www.webpagetest.org/keys/brave/dev.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
-            echo 'curl -s https://www.webpagetest.org/keys/brave/nightly.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/brave-browser-prerelease.gpg add -' >> ~/agent.sh
         fi
 
         if [ "${WPT_EDGE,,}" == 'y' ]; then
-            echo 'curl -s https://www.webpagetest.org/keys/microsoft/microsoft.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/microsoft.gpg add -' >> ~/agent.sh
+            echo 'curl -s https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key --keyring /etc/apt/trusted.gpg.d/microsoft.gpg add -' >> ~/agent.sh
         fi
 
         if [ "${WPT_OPERA,,}" == 'y' ]; then
@@ -600,7 +612,7 @@ elif [ "${WPT_UPDATE_BROWSERS,,}" == 'y' ]; then
     if [ "${LINUX_DISTRO}" == 'Raspbian' ]; then
         echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq --only-upgrade install chromium-browser firefox-esr' >> ~/agent.sh
     else
-        echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq --only-upgrade -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install google-chrome-stable google-chrome-beta google-chrome-unstable firefox firefox-trunk firefox-esr firefox-geckodriver brave-browser brave-browser-beta brave-browser-dev brave-browser-nightly opera-stable opera-beta opera-developer vivaldi-stable' >> ~/agent.sh
+        echo 'until sudo DEBIAN_FRONTEND=noninteractive apt -yq --only-upgrade -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" install google-chrome-stable google-chrome-beta google-chrome-unstable firefox firefox-trunk firefox-esr firefox-geckodriver brave-browser opera-stable opera-beta opera-developer vivaldi-stable' >> ~/agent.sh
     fi
     echo 'do' >> ~/agent.sh
     echo '    sleep 1' >> ~/agent.sh
