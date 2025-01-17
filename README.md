@@ -2,18 +2,19 @@
 
 Automated scripts for installing [dedicated `wptagent` agents](https://github.com/WPO-Foundation/wptagent).
 
+
 ## Configuration
 
 For [the `debian.sh` script](./debian.sh), environment variables control the options. For example:
 
-```sh
+```bash
 WPT_SERVER="webpagetest.mycompany.com" \
 WPT_LOCATION="Dulles" \
 WPT_KEY="xxxSomeSecretKeyxxx" \
 DISABLE_IPV6=y \
 WPT_OPERA=y \
 WPT_VIVALDI=y \
-bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
+bash <(curl -s https://raw.githubusercontent.com/catchpoint/wptagent-install/master/debian.sh)
 ```
 
 ### Location config
@@ -48,42 +49,41 @@ These will prompt if not specified _and_ not installing for cloud.
 * `WPT_OPERA` - `y` or `n` (default) : Install Opera (Stable, Beta, and Dev channels).
 * `WPT_VIVALDI` - `y` or `n` (default) : Install Vivaldi.
 
+
 ### Miscellaneous config
 
 * `WPT_INTERACTIVE` - `y` or `n` (default) : Install in a shared OS environment. `y` will expect to take over the whole machine, configure watchdog, cron, etc. `n` can be used for development installs and will default to the `master` branch.
 
 ## Installation/Usage
 
-For convenience, the GitHub URL is available shortened as <https://tiny.cc/wptagent>:
-
-```sh
+```bash
 WPT_SERVER="webpagetest.mycompany.com" \
 WPT_LOCATION="Dulles" \
 WPT_KEY="xxxSomeSecretKeyxxx" \
 DISABLE_IPV6=y \
 WPT_OPERA=y \
 WPT_VIVALDI=y \
-bash <(curl -sL https://tiny.cc/wptagent)
+bash <(curl -sL https://raw.githubusercontent.com/catchpoint/wptagent-install/master/debian.sh)
 ```
 
 ### Ubuntu 22.04+
  
 Tested on 20.04 LTS.
 
-```sh
-bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
+```bash
+bash <(curl -s https://raw.githubusercontent.com/catchpoint/WebPageTest.agent-install/master/debian.sh)
 ```
 
 ### Google Cloud
  
 ```sh
-WPT_CLOUD=gce bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
+WPT_CLOUD=gce bash <(curl -s https://raw.githubusercontent.com/catchpoint/wptagent-install/master/debian.sh)
 ```
 
 ### Amazon EC2
  
 ```sh
-WPT_CLOUD=ec2 bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
+WPT_CLOUD=ec2 bash <(curl -s https://raw.githubusercontent.com/catchpoint/wptagent-install/master/debian.sh)
 ```
 
 ### Raspberry Pi (Raspbian Stretch+)
@@ -93,7 +93,7 @@ Requires editing `~/agent.sh` after install to configure tethering and traffic s
 **⚠️ Warning:** This takes a ***long*** time (several hours). For multiple devices, it’s generally best to configure one then clone its SD card for other devices.
 
 ```sh
-bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/debian.sh)
+bash <(curl -s https://raw.githubusercontent.com/catchpoint/wptagent-install/master/debian.sh)
 ```
 
 ### MacOS
@@ -106,7 +106,7 @@ Tested on MacOS 11 (x86 and ARM).
    * If running on an M1 device, install rosetta when prompted (after accepting the license).
 4. Run the agent install script from Terminal:
   ```sh
-  bash <(curl -s https://raw.githubusercontent.com/WPO-Foundation/wptagent-install/master/macos.sh)
+  bash <(curl -s https://raw.githubusercontent.com/catchpoint/wptagent-install/master/macos.sh)
   ```
 5. The install script should install all browsers and prompt for the necessary system permissions.
 6. Configure the agent and watchdog to start automatically at startup:
@@ -119,5 +119,5 @@ Tested on MacOS 11 (x86 and ARM).
 Will not configure X, watchdog, cron, or a startup script. There will be a `master` branch checkout in `~/wptagent/` and a script to run the agent at `~/agent.sh`.
 
 ```sh
-WPT_INTERACTIVE=y bash <(curl -sL https://tiny.cc/wptagent)
+WPT_INTERACTIVE=y bash <(curl -sL https://raw.githubusercontent.com/catchpoint/wptagent-install/master/debian.sh)
 ```
