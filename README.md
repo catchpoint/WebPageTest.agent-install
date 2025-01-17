@@ -14,7 +14,7 @@ WPT_KEY="xxxSomeSecretKeyxxx" \
 DISABLE_IPV6=y \
 WPT_OPERA=y \
 WPT_VIVALDI=y \
-bash <(curl -s https://raw.githubusercontent.com/catchpoint/wptagent-install/master/debian.sh)
+bash <(curl -s https://raw.githubusercontent.com/catchpoint/WebPageTest.agent-install/master/debian.sh)
 ```
 
 ### Location config
