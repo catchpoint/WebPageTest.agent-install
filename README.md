@@ -22,7 +22,7 @@ bash <(curl -s https://raw.githubusercontent.com/catchpoint/WebPageTest.agent-in
 These will prompt if not specified _and_ not installing for cloud.
 
 * `WPT_SERVER` - WebPageTest server. i.e. `WPT_SERVER="webpagetest.mycompany.com"`
-* `WPT_LOCATION` - Location ID for the agent. i.e. `WPT_LOCATION="Dulles"`.
+* `WPT_LOCATION` - Location ID for the agent. i.e. `WPT_LOCATION="Location Name"`.
 * `WPT_KEY` - [API Key](https://docs.webpagetest.org/api/keys/) for the location.
 
 ### Agent config
@@ -58,7 +58,7 @@ These will prompt if not specified _and_ not installing for cloud.
 
 ```bash
 WPT_SERVER="webpagetest.mycompany.com" \
-WPT_LOCATION="Dulles" \
+WPT_LOCATION="Location Name" \
 WPT_KEY="xxxSomeSecretKeyxxx" \
 DISABLE_IPV6=y \
 WPT_OPERA=y \
