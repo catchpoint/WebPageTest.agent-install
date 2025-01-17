@@ -1,6 +1,6 @@
 # wptagent-install
 
-Automated scripts for installing [dedicated `wptagent` agents](https://github.com/WPO-Foundation/wptagent).
+Automated scripts for installing [dedicated wptagent agents](https://github.com/catchpoint/WebPageTest.agent).
 
 
 ## Configuration
@@ -9,7 +9,7 @@ For [the `debian.sh` script](./debian.sh), environment variables control the opt
 
 ```bash
 WPT_SERVER="webpagetest.mycompany.com" \
-WPT_LOCATION="Dulles" \
+WPT_LOCATION="Location Name" \
 WPT_KEY="xxxSomeSecretKeyxxx" \
 DISABLE_IPV6=y \
 WPT_OPERA=y \
@@ -63,7 +63,7 @@ WPT_KEY="xxxSomeSecretKeyxxx" \
 DISABLE_IPV6=y \
 WPT_OPERA=y \
 WPT_VIVALDI=y \
-bash <(curl -sL https://raw.githubusercontent.com/catchpoint/wptagent-install/master/debian.sh)
+bash <(curl -sL https://raw.githubusercontent.com/catchpoint/WebPageTest.agent-install/master/debian.sh)
 ```
 
 ### Ubuntu 22.04+
@@ -77,13 +77,13 @@ bash <(curl -s https://raw.githubusercontent.com/catchpoint/WebPageTest.agent-in
 ### Google Cloud
  
 ```sh
-WPT_CLOUD=gce bash <(curl -s https://raw.githubusercontent.com/catchpoint/wptagent-install/master/debian.sh)
+WPT_CLOUD=gce bash <(curl -s https://raw.githubusercontent.com/catchpoint/WebPageTest.agent-install/master/debian.sh)
 ```
 
 ### Amazon EC2
  
 ```sh
-WPT_CLOUD=ec2 bash <(curl -s https://raw.githubusercontent.com/catchpoint/wptagent-install/master/debian.sh)
+WPT_CLOUD=ec2 bash <(curl -s https://raw.githubusercontent.com/catchpoint/WebPageTest.agent-install/master/debian.sh)
 ```
 
 ### Raspberry Pi (Raspbian Stretch+)
@@ -93,7 +93,7 @@ Requires editing `~/agent.sh` after install to configure tethering and traffic s
 **⚠️ Warning:** This takes a ***long*** time (several hours). For multiple devices, it’s generally best to configure one then clone its SD card for other devices.
 
 ```sh
-bash <(curl -s https://raw.githubusercontent.com/catchpoint/wptagent-install/master/debian.sh)
+bash <(curl -s https://raw.githubusercontent.com/catchpoint/WebPageTest.agent-install/master/debian.sh)
 ```
 
 ### MacOS
@@ -106,7 +106,7 @@ Tested on MacOS 11 (x86 and ARM).
    * If running on an M1 device, install rosetta when prompted (after accepting the license).
 4. Run the agent install script from Terminal:
   ```sh
-  bash <(curl -s https://raw.githubusercontent.com/catchpoint/wptagent-install/master/macos.sh)
+  bash <(curl -s https://raw.githubusercontent.com/catchpoint/WebPageTest.agent-install/master/macos.sh)
   ```
 5. The install script should install all browsers and prompt for the necessary system permissions.
 6. Configure the agent and watchdog to start automatically at startup:
@@ -119,5 +119,5 @@ Tested on MacOS 11 (x86 and ARM).
 Will not configure X, watchdog, cron, or a startup script. There will be a `master` branch checkout in `~/wptagent/` and a script to run the agent at `~/agent.sh`.
 
 ```sh
-WPT_INTERACTIVE=y bash <(curl -sL https://raw.githubusercontent.com/catchpoint/wptagent-install/master/debian.sh)
+WPT_INTERACTIVE=y bash <(curl -sL https://raw.githubusercontent.com/catchpoint/WebPageTest.agent-install/master/debian.sh)
 ```
